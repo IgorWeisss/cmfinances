@@ -10,5 +10,8 @@ export async function GET(req:NextRequest) {
 // Getting body content on POST request
 export async function POST(req:NextRequest) {
   const body = await req.json()
-  return NextResponse.json(body)
+  return NextResponse.json({
+    "Status": "Data returned from Next server",
+    body
+  })
 }
