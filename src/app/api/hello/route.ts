@@ -1,6 +1,4 @@
-import { headers } from "next/dist/client/components/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { json } from "stream/consumers";
 
 // Getting search params from url
 export async function GET(req:NextRequest) {
@@ -21,7 +19,7 @@ export async function POST(req:NextRequest, res: NextResponse) {
     {
       status: 200,
       headers: {
-        'Access-Control-Allow-Origin': 'http://localhost',
+        'Access-Control-Allow-Origin': 'http://test.com',
         'Content-type': 'application/json'
       }
     }
