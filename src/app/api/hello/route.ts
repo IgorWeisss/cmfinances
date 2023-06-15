@@ -21,7 +21,7 @@ export async function POST(req:NextRequest, res: NextResponse) {
     {
       status: 200,
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'http://localhost',
         'Content-type': 'application/json'
       }
     }
