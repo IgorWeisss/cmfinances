@@ -9,7 +9,7 @@ export async function middleware(req:NextRequest, res:NextResponse) {
   const origin = req.headers.get('origin')
   console.log("Origin: ", origin)
 
-  if (origin && !allowedOrigins.includes(origin)) {
+  if (origin && !allowedOrigins.includes(origin) || !origin) {
     return new NextResponse(null, {
       status: 400,
       statusText: 'Bad Request',
