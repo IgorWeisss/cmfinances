@@ -1,13 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function middleware(req:NextRequest, res:NextResponse) {
-  const origin = req.nextUrl.origin
-  console.log("Origin: ", origin)
-  const pathname = req.nextUrl.pathname
-  console.log("pathname: ", pathname)
-  const basePath = req.nextUrl.basePath
-  console.log("basePath: ", basePath)
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? ['https://www.carolmueller.com.br', 'https://carolmueller.com.br']
+  : ['http://localhost:3000', 'chrome-extension://amknoiejhlmhancpahfcfcfhllgkpbld']
 
+export async function middleware(req:NextRequest, res:NextResponse) {
+  
+  const origin = req.headers.get('origin')
+  console.log("Origin: ", origin)
+
+  if (origin && !allowedOrigins.includes(origin)) {
+    return new NextResponse(null, {
+      status: 400,
+      statusText: 'Bad Request',
+      headers: {
+        'Content-type': 'text/plain'
+      }
+    })
+  }
+  
   return NextResponse.next()
 }
 
