@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const allowedOrigins = process.env.NODE_ENV === 'production'
-  ? process.env.NEXT_PUBLIC_ALLOWED_ORIGIN
+  ? [process.env.NEXT_PUBLIC_ALLOWED_ORIGIN]
   : ['http://localhost:3000', 'chrome-extension://amknoiejhlmhancpahfcfcfhllgkpbld']
 
 export async function middleware(req:NextRequest, res:NextResponse) {
