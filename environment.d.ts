@@ -1,5 +1,5 @@
 declare namespace NodeJS {
   interface ProcessEnv {
-    ALLOWED_ORIGIN: string
+    NEXT_PUBLIC_ALLOWED_ORIGIN: string
   }
 }
