@@ -9,6 +9,7 @@ const allowedOrigins =
       ]
 
 export async function middleware(request: NextRequest, response: NextResponse) {
+  // Auth for API routes
   if (request.nextUrl.pathname.startsWith('/api')) {
     const origin = request.headers.get('origin')
     const auth = request.headers.get('Authorization')
@@ -26,8 +27,8 @@ export async function middleware(request: NextRequest, response: NextResponse) {
 
     if (!verifiedApiRequest) {
       return new NextResponse(null, {
-        status: 403,
-        statusText: 'Forbidden',
+        status: 401,
+        statusText: 'Unauthorized',
         headers: {
           'Content-type': 'text/plain',
         },
@@ -35,6 +36,7 @@ export async function middleware(request: NextRequest, response: NextResponse) {
     }
   }
 
+  // Auth for the app Main page
   if (request.nextUrl.pathname.startsWith('/main')) {
     const token = request.cookies.get('token')?.value
 

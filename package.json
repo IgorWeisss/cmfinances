@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "^4.14.1",
     "@types/node": "20.3.1",
     "@types/react": "18.2.12",
     "@types/react-dom": "18.2.5",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@rocketseat/eslint-config": "^1.2.0",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "prisma": "^4.14.1"
   }
 }
