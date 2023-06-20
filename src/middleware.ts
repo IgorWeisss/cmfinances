@@ -8,28 +8,45 @@ const allowedOrigins =
         'chrome-extension://amknoiejhlmhancpahfcfcfhllgkpbld',
       ]
 
-export async function middleware(req: NextRequest, res: NextResponse) {
-  const origin = req.headers.get('origin')
-  console.log('Origin: ', origin)
+export async function middleware(request: NextRequest, response: NextResponse) {
+  if (request.nextUrl.pathname.startsWith('/api')) {
+    const origin = request.headers.get('origin')
+    console.log('Origin: ', origin)
+    const auth = request.headers.get('Authorization')
+    const verifiedApiRequest = auth === process.env.NEXT_PUBLIC_API_KEY
 
-  // Remove when finished and deployed to production
-  if (process.env.NODE_ENV === 'development') {
-    return NextResponse.next()
+    if (origin && !allowedOrigins.includes(origin)) {
+      return new NextResponse(null, {
+        status: 400,
+        statusText: 'Bad Request',
+        headers: {
+          'Content-type': 'text/plain',
+        },
+      })
+    }
+
+    if (!verifiedApiRequest) {
+      return new NextResponse(null, {
+        status: 403,
+        statusText: 'Forbidden',
+        headers: {
+          'Content-type': 'text/plain',
+        },
+      })
+    }
   }
 
-  if ((origin && !allowedOrigins.includes(origin)) || !origin) {
-    return new NextResponse(null, {
-      status: 400,
-      statusText: 'Bad Request',
-      headers: {
-        'Content-type': 'text/plain',
-      },
-    })
+  if (request.nextUrl.pathname.startsWith('/main')) {
+    const token = request.cookies.get('token')?.value
+
+    if (!token) {
+      return NextResponse.redirect(new URL('/', request.url), {
+        headers: {
+          'Set-cookie': `redirectTo=${request.url}; HttpOnly; Path=/; max-age=60;`,
+        },
+      })
+    }
   }
 
   return NextResponse.next()
-}
-
-export const config = {
-  matcher: '/api/:path*',
 }
