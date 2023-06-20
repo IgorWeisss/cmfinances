@@ -13,6 +13,8 @@ export async function middleware(request: NextRequest, response: NextResponse) {
     const origin = request.headers.get('origin')
     console.log('Origin: ', origin)
     const auth = request.headers.get('Authorization')
+    console.log('Auth: ', auth)
+    console.log('Key (.env): ', process.env.NEXT_PUBLIC_API_KEY)
     const verifiedApiRequest = auth === process.env.NEXT_PUBLIC_API_KEY
 
     if (origin && !allowedOrigins.includes(origin)) {
