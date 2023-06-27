@@ -16,6 +16,12 @@ model User {
   Entry    Entry[]
 }
 
+model Period {
+  id      String  @id @default(uuid())
+  name    String  @unique
+  entries Entry[]
+}
+
 model Entry {
   id          String    @id @default(uuid())
   createdAt   DateTime  @default(now())
@@ -30,6 +36,8 @@ model Entry {
   entryType   EntryType
   user        User      @relation(fields: [userId], references: [id])
   userId      String
+  Period      Period?   @relation(fields: [periodName], references: [name])
+  periodName  String?
 
   @@index([id, dueDate])
 }
