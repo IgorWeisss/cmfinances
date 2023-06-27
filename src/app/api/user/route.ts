@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma'
+import { Prisma } from '@prisma/client'
 import { NextRequest, NextResponse } from 'next/server'
 
+// Returns a list of users
 export async function GET(req: NextRequest) {
   const origin = req.headers.get('origin')
   try {
@@ -8,6 +10,7 @@ export async function GET(req: NextRequest) {
       select: {
         name: true,
         email: true,
+        id: true,
       },
     })
     return NextResponse.json(users, {
@@ -30,6 +33,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
+// Creates a new user
 export async function POST(req: NextRequest) {
   const origin = req.headers.get('origin')
 
@@ -55,12 +59,18 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.log(error)
 
-    return NextResponse.json(error, {
-      status: 503,
-      statusText: 'Service Unavailable',
-      headers: {
-        'Access-Control-Allow-Origin': origin || '*',
-      },
-    })
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        return NextResponse.json(
+          'There is a unique constraint violation, a new user cannot be created with this email',
+          {
+            status: 400,
+            headers: {
+              'Access-Control-Allow-Origin': origin || '*',
+            },
+          },
+        )
+      }
+    }
   }
 }

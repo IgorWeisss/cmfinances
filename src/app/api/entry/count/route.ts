@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
+// Returns the count of entries
 export async function GET(req: NextRequest, res: NextResponse) {
   const origin = req.headers.get('origin')
 

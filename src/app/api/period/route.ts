@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
+// Returns a list of all periods and the count of entries for that period
 export async function GET(req: NextRequest) {
   const origin = req.headers.get('origin')
 

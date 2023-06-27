@@ -36,8 +36,8 @@ model Entry {
   entryType   EntryType
   user        User      @relation(fields: [userId], references: [id])
   userId      String
-  Period      Period?   @relation(fields: [periodName], references: [name])
-  periodName  String?
+  Period      Period   @relation(fields: [periodName], references: [name])
+  periodName  String
 
   @@index([id, dueDate])
 }
