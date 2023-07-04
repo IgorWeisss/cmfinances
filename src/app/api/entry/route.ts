@@ -1,16 +1,32 @@
 import { prisma } from '@/lib/prisma'
+import { addMonths, format, subMonths } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import { NextRequest, NextResponse } from 'next/server'
 
-// Generates a periodName (MM-YYYY) based on a dueDate (string typed Date)
-function generatePeriodName(dueDateString: string) {
-  const dueDate = new Date(dueDateString)
+// Deletes periods without entries (runs on PUT and DELETE requests)
+async function deleteEmptyPeriods() {
+  try {
+    await prisma.period.deleteMany({
+      where: {
+        entries: {
+          none: {},
+        },
+      },
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+// Generates a periodName (MM-YYYY) based on a dueDate
+// If it's a card payment, extends to the next period.
+function generatePeriodName(dueDate: Date) {
   const day = dueDate.getDate()
-  const month = dueDate.getMonth() + 1
-  const year = dueDate.getFullYear()
   const periodName =
     day < 6
-      ? `${(month - 1).toString().padStart(2, '0')}-${year}`
-      : `${month.toString().padStart(2, '0')}-${year}`
+      ? format(subMonths(dueDate, 1), "MM'-'yyyy", { locale: ptBR })
+      : format(dueDate, "MM'-'yyyy", { locale: ptBR })
+
   return periodName
 }
 
@@ -70,7 +86,12 @@ export async function POST(req: NextRequest) {
     payMethod, // optional
   } = await req.json()
 
-  const periodName = generatePeriodName(dueDate)
+  console.log(dueDate)
+
+  const periodName =
+    payMethod && payMethod.startsWith('Cartão')
+      ? generatePeriodName(addMonths(new Date(dueDate), 1))
+      : generatePeriodName(new Date(dueDate))
 
   let verifiedPeriod = await prisma.period.findUnique({
     where: {
@@ -130,10 +151,13 @@ export async function PUT(req: NextRequest) {
 
   const { id, ...entryProperties } = await req.json()
 
-  const { dueDate } = entryProperties
+  const { dueDate, payMethod } = entryProperties
 
   if (dueDate) {
-    entryProperties.periodName = generatePeriodName(dueDate)
+    entryProperties.periodName =
+      payMethod && payMethod.startsWith('Cartão')
+        ? generatePeriodName(addMonths(new Date(dueDate), 1))
+        : generatePeriodName(new Date(dueDate))
     let verifiedPeriod = await prisma.period.findUnique({
       where: {
         name: entryProperties.periodName,
@@ -158,6 +182,8 @@ export async function PUT(req: NextRequest) {
         ...entryProperties,
       },
     })
+
+    deleteEmptyPeriods()
 
     return NextResponse.json(updatedEntry, {
       status: 200,
@@ -193,6 +219,8 @@ export async function DELETE(req: NextRequest) {
           id,
         },
       })
+
+      deleteEmptyPeriods()
 
       return NextResponse.json(deletedEntry, {
         status: 200,
