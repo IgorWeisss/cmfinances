@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 import './globals.css'
-import { Inter } from 'next/font/google'
+import { Poppins } from 'next/font/google'
 
-const inter = Inter({ subsets: ['latin'] })
+const poppins = Poppins({ weight: ['400', '700'], subsets: ['latin'] })
 
 export const metadata = {
   title: 'CMFinances',
@@ -11,8 +11,10 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="pt-BR">
+      <body className={poppins.className}>
+        <div className="bg-zinc-900 flex flex-col">{children}</div>
+      </body>
     </html>
   )
 }
