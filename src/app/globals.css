@@ -17,6 +17,22 @@
 }
 
 @layer utilities {
+  .carousel > div {
+    overflow: visible;
+  }
+
+  .carousel > button {
+    display: none;
+  }
+  
+  .carousel > div > div {
+    transform: none;
+  }
+
+  .carousel-transform {
+    transform: translateX(calc((var(--index) * 33.33% * -1) + 33.33%));
+  }
+
   .h-container {
     height: calc(100vh - 11.5rem);
   }
