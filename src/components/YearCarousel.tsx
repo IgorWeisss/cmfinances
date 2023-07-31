@@ -50,7 +50,9 @@ export function YearCarousel() {
   return (
     <div className="flex w-full">
       <button
-        className="text-orange-500 hover:brightness-125 transition-colors"
+        className={`text-gray-600 transition-colors ${
+          index > 0 && 'text-orange-500 hover:brightness-125'
+        }`}
         onClick={handlePrev}
       >
         <ChevronLeft />
@@ -78,7 +80,10 @@ export function YearCarousel() {
         </ToggleGroup.Root>
       </div>
       <button
-        className="text-orange-500 hover:brightness-125 transition-colors"
+        className={`text-gray-600 transition-colors ${
+          index < navButtonsItems.length - 1 &&
+          'text-orange-500 hover:brightness-125'
+        }`}
         onClick={handleNext}
       >
         <ChevronRight />

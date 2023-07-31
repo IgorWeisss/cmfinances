@@ -1,4 +1,4 @@
-import { NavCarousel } from './NavCarousel'
+import { MonthCarousel } from './MonthCarousel'
 import { YearCarousel } from './YearCarousel'
 
 interface HeaderProps {
@@ -14,7 +14,7 @@ export function Header({ showMonths }: HeaderProps) {
           {showMonths && (
             <>
               <div className="sm:w-2 sm:mx-4 bg-gray-600"></div>
-              <NavCarousel />
+              <MonthCarousel />
             </>
           )}
         </div>

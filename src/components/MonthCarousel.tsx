@@ -22,7 +22,7 @@ const months = [
 const toggleGroupClasses =
   'flex flex-none items-center w-1/3 justify-center data-[state=on]:text-gray-100 hover:brightness-125 px-3 transition-all'
 
-export function NavCarousel() {
+export function MonthCarousel() {
   const navButtonsItems = months
 
   const initialIndex = new Date().getMonth()
@@ -45,7 +45,9 @@ export function NavCarousel() {
   return (
     <div className="flex w-full sm:carousel">
       <button
-        className="text-orange-500 hover:brightness-125 transition-colors"
+        className={`text-gray-600 transition-colors ${
+          index > 0 && 'text-orange-500 hover:brightness-125'
+        }`}
         onClick={handlePrev}
       >
         <ChevronLeft />
@@ -73,7 +75,10 @@ export function NavCarousel() {
         </ToggleGroup.Root>
       </div>
       <button
-        className="text-orange-500 hover:text-gray-100 transition-colors"
+        className={`text-gray-600 transition-colors ${
+          index < navButtonsItems.length - 1 &&
+          'text-orange-500 hover:brightness-125'
+        }`}
         onClick={handleNext}
       >
         <ChevronRight />
