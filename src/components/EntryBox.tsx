@@ -1,13 +1,26 @@
 'use client'
-import { Plus } from 'lucide-react'
+import { useState } from 'react'
 
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
-import { useState } from 'react'
-import { Entry } from './Entry'
+import { Plus } from 'lucide-react'
+
+import { IncomeEntry } from './IncomeEntry'
+import entryData from '../util/PeriodEntryExample.json'
 
 const toggleGroupItemClasses = `data-[state=on]:bg-gradient-to-b data-[state=on]:from-orange-500
   data-[state=on]:to-orange-600 data-[state=on]:text-gray-100 rounded-[1.25rem]
   text-sm px-8 py-3 text-gray-600 hover:shadow-filter-box transition-all`
+
+const EntryBoxVariants = {
+  IN: {
+    title: 'Entradas',
+    color: 'text-green-500',
+  },
+  OUT: {
+    title: 'Saídas',
+    color: 'text-red-500',
+  },
+}
 
 interface EntryBoxProps {
   type: 'IN' | 'OUT'
@@ -15,17 +28,29 @@ interface EntryBoxProps {
 
 export function EntryBox({ type }: EntryBoxProps) {
   const [filter, setFilter] = useState('all')
+  const [isSelected, setIsSelected] = useState<null | number>(null)
 
-  const EntryBoxVariants = {
-    IN: {
-      title: 'Entradas',
-      color: 'text-green-500',
-    },
-    OUT: {
-      title: 'Saídas',
-      color: 'text-red-500',
-    },
+  let filteredData = entryData.entries
+
+  switch (filter) {
+    case 'paid':
+      filteredData = entryData.entries.filter((entry) => entry.paid === true)
+      break
+
+    case 'unpaid':
+      filteredData = entryData.entries.filter((entry) => entry.paid === false)
+      break
   }
+
+  const totalValue = filteredData.reduce(
+    (acc, cur) => acc + Number(cur.value),
+    0,
+  )
+
+  const formattedTotalValue = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(totalValue)
 
   const variantProps = EntryBoxVariants[type]
 
@@ -65,26 +90,21 @@ export function EntryBox({ type }: EntryBoxProps) {
         </ToggleGroup.Root>
       </header>
       <div className="flex flex-col h-box-content overflow-y-auto overscroll-contain box-scroll">
-        <Entry />
-        <Entry />
-        <Entry />
-        <Entry />
-        <Entry />
-        <Entry />
-        <Entry />
-        <Entry />
-        <Entry />
-        <Entry />
-        <Entry />
-        <Entry />
-        <Entry />
+        {filteredData.map((entry, index) => (
+          <IncomeEntry
+            isSelected={isSelected === index}
+            handleSelectItem={() => setIsSelected(index)}
+            entryData={entry}
+            key={entry.id}
+          />
+        ))}
       </div>
       <footer className="flex flex-col items-center justify-center py-2 gap-2 bg-gray-100 absolute bottom-0 w-full">
         <span className="text-gray-600 text-base leading-none">Total:</span>
         <span
           className={` font-bold text-2xl leading-none ${variantProps.color}`}
         >
-          R$4.000,00
+          {formattedTotalValue}
         </span>
       </footer>
     </div>
