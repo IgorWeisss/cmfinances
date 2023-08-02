@@ -6,6 +6,7 @@ import { Plus } from 'lucide-react'
 
 import { IncomeEntry } from './IncomeEntry'
 import entryData from '../util/PeriodEntryExample.json'
+import { ExpenseEntry } from './ExpenseEntry'
 
 const toggleGroupItemClasses = `data-[state=on]:bg-gradient-to-b data-[state=on]:from-orange-500
   data-[state=on]:to-orange-600 data-[state=on]:text-gray-100 rounded-[1.25rem]
@@ -90,14 +91,24 @@ export function EntryBox({ type }: EntryBoxProps) {
         </ToggleGroup.Root>
       </header>
       <div className="flex flex-col h-box-content overflow-y-auto overscroll-contain box-scroll">
-        {filteredData.map((entry, index) => (
-          <IncomeEntry
-            isSelected={isSelected === index}
-            handleSelectItem={() => setIsSelected(index)}
-            entryData={entry}
-            key={entry.id}
-          />
-        ))}
+        {type === 'IN' &&
+          filteredData.map((entry, index) => (
+            <IncomeEntry
+              isSelected={isSelected === index}
+              handleSelectItem={() => setIsSelected(index)}
+              entryData={entry}
+              key={entry.id}
+            />
+          ))}
+        {type === 'OUT' &&
+          filteredData.map((entry, index) => (
+            <ExpenseEntry
+              isSelected={isSelected === index}
+              handleSelectItem={() => setIsSelected(index)}
+              entryData={entry}
+              key={entry.id}
+            />
+          ))}
       </div>
       <footer className="flex flex-col items-center justify-center py-2 gap-2 bg-gray-100 absolute bottom-0 w-full">
         <span className="text-gray-600 text-base leading-none">Total:</span>
