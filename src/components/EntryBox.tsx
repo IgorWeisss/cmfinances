@@ -8,6 +8,8 @@ import { IncomeEntry } from './IncomeEntry'
 import { ExpenseEntry } from './ExpenseEntry'
 import { EntrysContext } from '@/contexts/EntrysContext'
 import { useEntryData } from '@/hooks/useEntryData'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 
 const toggleGroupItemClasses = `data-[state=on]:bg-gradient-to-b data-[state=on]:from-orange-500
   data-[state=on]:to-orange-600 data-[state=on]:text-gray-100 rounded-[1.25rem]
@@ -44,10 +46,27 @@ interface EntryBoxProps {
   type: 'IN' | 'OUT'
 }
 
+async function getData(period: string) {
+  const { data } = await axios.get(`/api/period/${period}`, {
+    headers: {
+      Authorization: process.env.NEXT_PUBLIC_API_KEY,
+    },
+  })
+  return data
+}
+
 export function EntryBox({ type }: EntryBoxProps) {
   const [paidStateFilter, setPaidStateFilter] = useState('all')
   const [isSelected, setIsSelected] = useState<null | number>(null)
-  const { initialData } = useContext(EntrysContext)
+  const { initialData, month, year } = useContext(EntrysContext)
+  const period = `${month}-${year}`
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['periodData', period],
+    queryFn: () => getData(period),
+  })
+
+  console.log(data, isLoading, isError)
 
   const { filteredData, formattedTotalValue } = useEntryData({
     initialData,
