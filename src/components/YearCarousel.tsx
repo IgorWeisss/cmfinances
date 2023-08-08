@@ -1,37 +1,21 @@
 'use client'
+import { EntrysContext } from '@/contexts/EntrysContext'
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useState } from 'react'
-
-const years = [
-  '2021',
-  '2022',
-  '2023',
-  '2024',
-  '2025',
-  '2026',
-  '2027',
-  '2028',
-  '2029',
-  '2030',
-  '2031',
-  '2032',
-  '2033',
-  '2034',
-  '2035',
-]
+import { useContext, useEffect, useState } from 'react'
 
 const toggleGroupClasses =
   'flex flex-none items-center w-1/3 justify-center data-[state=on]:text-gray-100 hover:brightness-125 px-3 transition-all'
 
 export function YearCarousel() {
-  const navButtonsItems = years
-
-  const initialIndex = navButtonsItems.indexOf(
-    new Date().getFullYear().toString(),
-  )
+  const { yearsList, setYear } = useContext(EntrysContext)
+  const initialIndex = yearsList.indexOf(new Date().getFullYear().toString())
   const [index, setIndex] = useState(initialIndex)
+
+  useEffect(() => {
+    setYear(yearsList[index])
+  }, [index, setYear, yearsList])
 
   const handlePrev = () => {
     setIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex))
@@ -39,7 +23,7 @@ export function YearCarousel() {
 
   const handleNext = () => {
     setIndex((prevIndex) =>
-      prevIndex < navButtonsItems.length - 1 ? prevIndex + 1 : prevIndex,
+      prevIndex < yearsList.length - 1 ? prevIndex + 1 : prevIndex,
     )
   }
 
@@ -50,8 +34,8 @@ export function YearCarousel() {
   return (
     <div className="flex w-full">
       <button
-        className={`text-gray-600 transition-colors ${
-          index > 0 && 'text-orange-500 hover:brightness-125'
+        className={`text-gray-600 cursor-not-allowed transition-colors ${
+          index > 0 && 'text-orange-500 cursor-pointer hover:brightness-125'
         }`}
         onClick={handlePrev}
       >
@@ -68,11 +52,11 @@ export function YearCarousel() {
           font-bold sm:text-xl text-gray-600"
           style={inlineDynamicStyle}
         >
-          {navButtonsItems.map((item) => (
+          {yearsList.map((item) => (
             <ToggleGroup.Item
               key={item}
               className={toggleGroupClasses}
-              value={navButtonsItems.indexOf(item).toString()}
+              value={yearsList.indexOf(item).toString()}
             >
               {item}
             </ToggleGroup.Item>
@@ -80,9 +64,9 @@ export function YearCarousel() {
         </ToggleGroup.Root>
       </div>
       <button
-        className={`text-gray-600 transition-colors ${
-          index < navButtonsItems.length - 1 &&
-          'text-orange-500 hover:brightness-125'
+        className={`text-gray-600 cursor-not-allowed transition-colors ${
+          index < yearsList.length - 1 &&
+          'text-orange-500 cursor-pointer hover:brightness-125'
         }`}
         onClick={handleNext}
       >

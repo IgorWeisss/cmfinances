@@ -3,23 +3,10 @@ import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
 import { AlertTriangle, Check, Edit, Trash2 } from 'lucide-react'
+import { EntryData } from './EntryBox'
 
 interface IncomeEntryProps {
-  entryData: {
-    id: string
-    createdAt: string
-    updatedAt: string
-    dueDate: string
-    description: string
-    client: string
-    clientId: string | null
-    value: string
-    payMethod: string
-    paid: boolean
-    entryType: string
-    userId: string
-    periodName: string
-  }
+  entryData: EntryData
   isSelected: boolean
   handleSelectItem: () => void
 }
@@ -103,7 +90,7 @@ export function IncomeEntry({
     currency: 'BRL',
   }).format(Number(value))
 
-  const payMethodStyle = payMethodStyleTemplates[payMethod]
+  const payMethodStyle = payMethod && payMethodStyleTemplates[payMethod]
 
   const separatorColor = () => {
     if (!isSelected) {
@@ -132,12 +119,14 @@ export function IncomeEntry({
           ${separatorColor()}`}
         ></div>
         <div className="z-10 flex flex-col gap-4 items-center justify-center">
-          <div
-            title={payMethod}
-            className={`flex items-center justify-center bg-gradient-to-b ${payMethodStyle.colors} h-12 w-12 rounded-full text-gray-100 font-bold text-base`}
-          >
-            {payMethodStyle.short}
-          </div>
+          {payMethodStyle && (
+            <div
+              title={payMethod}
+              className={`flex items-center justify-center bg-gradient-to-b ${payMethodStyle.colors} h-12 w-12 rounded-full text-gray-100 font-bold text-base`}
+            >
+              {payMethodStyle.short}
+            </div>
+          )}
           <p className="text-gray-100 ">{formattedDueDate}</p>
           <div className={`flex gap-2 ${!isSelected && 'hidden'}`}>
             <button title="Editar">

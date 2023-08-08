@@ -1,12 +1,13 @@
 'use client'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
-import { Plus } from 'lucide-react'
+import { FileX, Plus } from 'lucide-react'
 
 import { IncomeEntry } from './IncomeEntry'
-import entryData from '../util/PeriodEntryExample.json'
 import { ExpenseEntry } from './ExpenseEntry'
+import { EntrysContext } from '@/contexts/EntrysContext'
+import { useEntryData } from '@/hooks/useEntryData'
 
 const toggleGroupItemClasses = `data-[state=on]:bg-gradient-to-b data-[state=on]:from-orange-500
   data-[state=on]:to-orange-600 data-[state=on]:text-gray-100 rounded-[1.25rem]
@@ -23,35 +24,36 @@ const EntryBoxVariants = {
   },
 }
 
+export interface EntryData {
+  id: string
+  createdAt: string
+  updatedAt: string
+  dueDate: string
+  description: string
+  client: string | null
+  clientId: string | null
+  value: string
+  payMethod: string | null
+  paid: boolean
+  entryType: string
+  userId: string
+  periodName: string
+}
+
 interface EntryBoxProps {
   type: 'IN' | 'OUT'
 }
 
 export function EntryBox({ type }: EntryBoxProps) {
-  const [filter, setFilter] = useState('all')
+  const [paidStateFilter, setPaidStateFilter] = useState('all')
   const [isSelected, setIsSelected] = useState<null | number>(null)
+  const { initialData } = useContext(EntrysContext)
 
-  let filteredData = entryData.entries
-
-  switch (filter) {
-    case 'paid':
-      filteredData = entryData.entries.filter((entry) => entry.paid === true)
-      break
-
-    case 'unpaid':
-      filteredData = entryData.entries.filter((entry) => entry.paid === false)
-      break
-  }
-
-  const totalValue = filteredData.reduce(
-    (acc, cur) => acc + Number(cur.value),
-    0,
-  )
-
-  const formattedTotalValue = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(totalValue)
+  const { filteredData, formattedTotalValue } = useEntryData({
+    initialData,
+    type,
+    filter: paidStateFilter,
+  })
 
   const variantProps = EntryBoxVariants[type]
 
@@ -73,9 +75,9 @@ export function EntryBox({ type }: EntryBoxProps) {
         </button>
         <ToggleGroup.Root
           type="single"
-          value={filter}
+          value={paidStateFilter}
           onValueChange={(value) => {
-            if (value) setFilter(value)
+            if (value) setPaidStateFilter(value)
           }}
           className="rounded-[1.25rem] shadow-filter-box flex justify-between"
         >
@@ -91,24 +93,32 @@ export function EntryBox({ type }: EntryBoxProps) {
         </ToggleGroup.Root>
       </header>
       <div className="flex flex-col h-box-content overflow-y-auto overscroll-contain box-scroll">
-        {type === 'IN' &&
-          filteredData.map((entry, index) => (
-            <IncomeEntry
-              isSelected={isSelected === index}
-              handleSelectItem={() => setIsSelected(index)}
-              entryData={entry}
-              key={entry.id}
-            />
-          ))}
-        {type === 'OUT' &&
-          filteredData.map((entry, index) => (
-            <ExpenseEntry
-              isSelected={isSelected === index}
-              handleSelectItem={() => setIsSelected(index)}
-              entryData={entry}
-              key={entry.id}
-            />
-          ))}
+        {filteredData === null ? (
+          <div className="flex flex-col h-full items-center justify-center p-10 text-gray-500">
+            <FileX size={60} className="" />
+            <p className="text-4xl font-bold mt-6">Ops...</p>
+            <p className="text-lg mt-2 font-bold">Não tem nada aqui ainda...</p>
+          </div>
+        ) : (
+          (type === 'IN' &&
+            filteredData.map((entry, index) => (
+              <IncomeEntry
+                isSelected={isSelected === index}
+                handleSelectItem={() => setIsSelected(index)}
+                entryData={entry}
+                key={entry.id}
+              />
+            ))) ||
+          (type === 'OUT' &&
+            filteredData.map((entry, index) => (
+              <ExpenseEntry
+                isSelected={isSelected === index}
+                handleSelectItem={() => setIsSelected(index)}
+                entryData={entry}
+                key={entry.id}
+              />
+            )))
+        )}
       </div>
       <footer className="flex flex-col items-center justify-center py-2 gap-2 bg-gray-100 absolute bottom-0 w-full">
         <span className="text-gray-600 text-base leading-none">Total:</span>

@@ -1,8 +1,9 @@
 'use client'
+import { EntrysContext } from '@/contexts/EntrysContext'
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 const months = [
   'JAN',
@@ -27,6 +28,11 @@ export function MonthCarousel() {
 
   const initialIndex = new Date().getMonth()
   const [index, setIndex] = useState(initialIndex)
+  const { setMonth } = useContext(EntrysContext)
+
+  useEffect(() => {
+    setMonth(String(index + 1).padStart(2, '0'))
+  }, [index, setMonth])
 
   const handlePrev = () => {
     setIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex))

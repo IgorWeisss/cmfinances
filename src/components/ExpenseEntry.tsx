@@ -3,23 +3,10 @@ import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
 import { Check, Edit, Trash2 } from 'lucide-react'
+import { EntryData } from './EntryBox'
 
 interface ExpenseEntryProps {
-  entryData: {
-    client?: string
-    clientId?: string | null
-    payMethod?: string
-    id: string
-    createdAt: string
-    updatedAt: string
-    dueDate: string
-    description: string
-    value: string
-    paid: boolean
-    entryType: string
-    userId: string
-    periodName: string
-  }
+  entryData: EntryData
   isSelected: boolean
   handleSelectItem: () => void
 }

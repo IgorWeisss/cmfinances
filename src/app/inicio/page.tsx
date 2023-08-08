@@ -2,8 +2,6 @@ import { EntryBox } from '@/components/EntryBox'
 import { Header } from '@/components/Header'
 import { Stats } from '@/components/Stats'
 
-// Aqui vou ter que criar o context que receberá o ano e o mês
-
 export default function Inicio() {
   return (
     <>
