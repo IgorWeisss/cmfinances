@@ -1,15 +1,9 @@
 'use client'
-import { useContext, useState } from 'react'
 
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
-import { FileX, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 
-import { IncomeEntry } from './IncomeEntry'
-import { ExpenseEntry } from './ExpenseEntry'
-import { EntrysContext } from '@/contexts/EntrysContext'
 import { useEntryData } from '@/hooks/useEntryData'
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
 
 const toggleGroupItemClasses = `data-[state=on]:bg-gradient-to-b data-[state=on]:from-orange-500
   data-[state=on]:to-orange-600 data-[state=on]:text-gray-100 rounded-[1.25rem]
@@ -26,53 +20,17 @@ const EntryBoxVariants = {
   },
 }
 
-export interface EntryData {
-  id: string
-  createdAt: string
-  updatedAt: string
-  dueDate: string
-  description: string
-  client: string | null
-  clientId: string | null
-  value: string
-  payMethod: string | null
-  paid: boolean
-  entryType: string
-  userId: string
-  periodName: string
-}
-
 interface EntryBoxProps {
   type: 'IN' | 'OUT'
 }
 
-async function getData(period: string) {
-  const { data } = await axios.get(`/api/period/${period}`, {
-    headers: {
-      Authorization: process.env.NEXT_PUBLIC_API_KEY,
-    },
-  })
-  return data
-}
-
 export function EntryBox({ type }: EntryBoxProps) {
-  const [paidStateFilter, setPaidStateFilter] = useState('all')
-  const [isSelected, setIsSelected] = useState<null | number>(null)
-  const { initialData, month, year } = useContext(EntrysContext)
-  const period = `${month}-${year}`
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['periodData', period],
-    queryFn: () => getData(period),
-  })
-
-  console.log(data, isLoading, isError)
-
-  const { filteredData, formattedTotalValue } = useEntryData({
-    initialData,
-    type,
-    filter: paidStateFilter,
-  })
+  const {
+    formattedTotalValue,
+    paidStateFilter,
+    setPaidStateFilter,
+    EntryContent,
+  } = useEntryData(type)
 
   const variantProps = EntryBoxVariants[type]
 
@@ -112,32 +70,7 @@ export function EntryBox({ type }: EntryBoxProps) {
         </ToggleGroup.Root>
       </header>
       <div className="flex flex-col h-box-content overflow-y-auto overscroll-contain box-scroll">
-        {filteredData === null ? (
-          <div className="flex flex-col h-full items-center justify-center p-10 text-gray-500">
-            <FileX size={60} className="" />
-            <p className="text-4xl font-bold mt-6">Ops...</p>
-            <p className="text-lg mt-2 font-bold">Não tem nada aqui ainda...</p>
-          </div>
-        ) : (
-          (type === 'IN' &&
-            filteredData.map((entry, index) => (
-              <IncomeEntry
-                isSelected={isSelected === index}
-                handleSelectItem={() => setIsSelected(index)}
-                entryData={entry}
-                key={entry.id}
-              />
-            ))) ||
-          (type === 'OUT' &&
-            filteredData.map((entry, index) => (
-              <ExpenseEntry
-                isSelected={isSelected === index}
-                handleSelectItem={() => setIsSelected(index)}
-                entryData={entry}
-                key={entry.id}
-              />
-            )))
-        )}
+        <EntryContent />
       </div>
       <footer className="flex flex-col items-center justify-center py-2 gap-2 bg-gray-100 absolute bottom-0 w-full">
         <span className="text-gray-600 text-base leading-none">Total:</span>

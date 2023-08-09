@@ -1,9 +1,9 @@
+import { EntryData } from '@/hooks/useEntryData'
 import * as Checkbox from '@radix-ui/react-checkbox'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
 import { AlertTriangle, Check, Edit, Trash2 } from 'lucide-react'
-import { EntryData } from './EntryBox'
 
 interface IncomeEntryProps {
   entryData: EntryData
