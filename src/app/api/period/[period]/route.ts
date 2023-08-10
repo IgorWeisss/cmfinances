@@ -16,7 +16,11 @@ export async function GET(
       },
       include: {
         _count: true,
-        entries: true,
+        entries: {
+          orderBy: {
+            client: 'asc',
+          },
+        },
       },
     })
 

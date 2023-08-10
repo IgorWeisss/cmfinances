@@ -86,8 +86,6 @@ export async function POST(req: NextRequest) {
     payMethod, // optional
   } = await req.json()
 
-  console.log(dueDate)
-
   const periodName =
     payMethod && payMethod.startsWith('Cartão')
       ? generatePeriodName(addMonths(new Date(dueDate), 1))
