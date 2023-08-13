@@ -15,9 +15,7 @@ const initialState = {
 type StateProps = typeof initialState
 
 export enum REDUCER_ACTIONS {
-  // eslint-disable-next-line no-unused-vars
   SET_YEAR = 'SET_YEAR',
-  // eslint-disable-next-line no-unused-vars
   SET_MONTH = 'SET_MONTH',
 }
 
