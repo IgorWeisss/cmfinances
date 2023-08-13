@@ -37,17 +37,19 @@ export async function middleware(request: NextRequest, response: NextResponse) {
   }
 
   // Auth for the app Main page
-  if (request.nextUrl.pathname.startsWith('/inicio')) {
-    const token = request.cookies.get('token')?.value
+  if (process.env.NODE_ENV === 'production') {
+    if (request.nextUrl.pathname.startsWith('/inicio')) {
+      const token = request.cookies.get('token')?.value
 
-    if (!token) {
-      return NextResponse.redirect(new URL('/', request.url), {
-        headers: {
-          'Set-cookie': `redirectTo=${request.url}; HttpOnly; Path=/; max-age=60;`,
-        },
-      })
+      if (!token) {
+        return NextResponse.redirect(new URL('/', request.url), {
+          headers: {
+            'Set-cookie': `redirectTo=${request.url}; HttpOnly; Path=/; max-age=60;`,
+          },
+        })
+      }
     }
-  }
 
-  return NextResponse.next()
+    return NextResponse.next()
+  }
 }
