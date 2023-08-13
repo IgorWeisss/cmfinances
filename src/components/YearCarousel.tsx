@@ -1,5 +1,5 @@
 'use client'
-import { EntrysContext } from '@/contexts/EntrysContext'
+import { EntrysContext, REDUCER_ACTIONS } from '@/contexts/EntrysContext'
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -9,13 +9,13 @@ const toggleGroupClasses =
   'flex flex-none items-center w-1/3 justify-center data-[state=on]:text-gray-100 hover:brightness-125 px-3 transition-all'
 
 export function YearCarousel() {
-  const { yearsList, setYear } = useContext(EntrysContext)
+  const { yearsList, dispatch } = useContext(EntrysContext)
   const initialIndex = yearsList.indexOf(new Date().getFullYear().toString())
   const [index, setIndex] = useState(initialIndex)
 
   useEffect(() => {
-    setYear(yearsList[index])
-  }, [index, setYear, yearsList])
+    dispatch({ type: REDUCER_ACTIONS.SET_YEAR, payload: yearsList[index] })
+  }, [index, dispatch, yearsList])
 
   const handlePrev = () => {
     setIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex))
