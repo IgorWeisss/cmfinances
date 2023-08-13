@@ -33,13 +33,13 @@ const reducer = (state: StateProps, action: ActionProps): StateProps => {
       return {
         ...state,
         month: payload ?? '',
-        period: `${state.month}-${state.year}`,
+        period: `${payload}-${state.year}`,
       }
     case REDUCER_ACTIONS.SET_YEAR:
       return {
         ...state,
         year: payload ?? '',
-        period: `${state.month}-${state.year}`,
+        period: `${state.month}-${payload}`,
       }
     default:
       return state
@@ -47,15 +47,15 @@ const reducer = (state: StateProps, action: ActionProps): StateProps => {
 }
 
 interface EntrysContextType {
-  state: typeof initialState
-  dispatch: Dispatch<ActionProps>
+  contextState: typeof initialState
+  contextDispatch: Dispatch<ActionProps>
   yearsList: string[]
 }
 
 export const EntrysContext = createContext({} as EntrysContextType)
 
 export function EntryProvider({ children, yearsList }: EntryProviderProps) {
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [contextState, contextDispatch] = useReducer(reducer, initialState)
   // const [year, setYearState] = useState('')
   // const [month, setMonthState] = useState('')
 
@@ -68,7 +68,9 @@ export function EntryProvider({ children, yearsList }: EntryProviderProps) {
   // }
 
   return (
-    <EntrysContext.Provider value={{ state, dispatch, yearsList }}>
+    <EntrysContext.Provider
+      value={{ contextState, contextDispatch, yearsList }}
+    >
       {children}
     </EntrysContext.Provider>
   )

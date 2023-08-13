@@ -9,13 +9,16 @@ const toggleGroupClasses =
   'flex flex-none items-center w-1/3 justify-center data-[state=on]:text-gray-100 hover:brightness-125 px-3 transition-all'
 
 export function YearCarousel() {
-  const { yearsList, dispatch } = useContext(EntrysContext)
+  const { yearsList, contextDispatch } = useContext(EntrysContext)
   const initialIndex = yearsList.indexOf(new Date().getFullYear().toString())
   const [index, setIndex] = useState(initialIndex)
 
   useEffect(() => {
-    dispatch({ type: REDUCER_ACTIONS.SET_YEAR, payload: yearsList[index] })
-  }, [index, dispatch, yearsList])
+    contextDispatch({
+      type: REDUCER_ACTIONS.SET_YEAR,
+      payload: yearsList[index],
+    })
+  }, [index, contextDispatch, yearsList])
 
   const handlePrev = () => {
     setIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex))

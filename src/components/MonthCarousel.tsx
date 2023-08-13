@@ -28,14 +28,14 @@ export function MonthCarousel() {
 
   const initialIndex = new Date().getMonth()
   const [index, setIndex] = useState(initialIndex)
-  const { dispatch } = useContext(EntrysContext)
+  const { contextDispatch } = useContext(EntrysContext)
 
   useEffect(() => {
-    dispatch({
+    contextDispatch({
       type: REDUCER_ACTIONS.SET_MONTH,
       payload: String(index + 1).padStart(2, '0'),
     })
-  }, [index, dispatch])
+  }, [index, contextDispatch])
 
   const handlePrev = () => {
     setIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex))

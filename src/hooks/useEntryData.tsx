@@ -40,11 +40,11 @@ interface useEntryDataTypes {
 export function useEntryData(type: 'IN' | 'OUT'): useEntryDataTypes {
   const [paidStateFilter, setPaidStateFilter] = useState('all')
   const [isSelected, setIsSelected] = useState<null | number>(null)
-  const { state } = useContext(EntrysContext)
+  const { contextState } = useContext(EntrysContext)
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['periodData', state.period],
-    queryFn: () => getPeriodData(state.period),
+    queryKey: ['periodData', contextState.period],
+    queryFn: () => getPeriodData(contextState.period),
   })
 
   function applyFilters(data: EntryData[]): EntryData[] | null {
