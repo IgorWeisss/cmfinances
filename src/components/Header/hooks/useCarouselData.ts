@@ -34,21 +34,21 @@ export function useCarouselData(type: 'MONTH' | 'YEAR') {
   const [index, setIndex] = useState(initialIndex)
 
   useEffect(() => {
-    function setInitialYear() {
-      contextDispatch({
-        type: 'SET_YEAR',
-        payload: yearsList[index],
-      })
+    function updateContextValues() {
+      if (type === 'MONTH') {
+        contextDispatch({
+          type: 'SET_MONTH',
+          payload: String(index + 1).padStart(2, '0'),
+        })
+      } else {
+        contextDispatch({
+          type: 'SET_YEAR',
+          payload: yearsList[index],
+        })
+      }
     }
 
-    function setInitialMonth() {
-      contextDispatch({
-        type: 'SET_MONTH',
-        payload: String(index + 1).padStart(2, '0'),
-      })
-    }
-
-    type === 'MONTH' ? setInitialMonth() : setInitialYear()
+    updateContextValues()
   }, [contextDispatch, index, type, yearsList])
 
   const handlePrev = () => {

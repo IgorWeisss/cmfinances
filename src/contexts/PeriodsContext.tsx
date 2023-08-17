@@ -6,17 +6,15 @@ interface PeriodProviderProps {
   yearsList: string[]
 }
 
-const initialState = {
-  year: '',
-  month: '',
-  period: '',
+interface StateProps {
+  year: string
+  month: string
+  period: string
 }
-
-type StateProps = typeof initialState
 
 interface ActionProps {
   type: 'SET_YEAR' | 'SET_MONTH'
-  payload?: string
+  payload: string
 }
 
 const reducer = (state: StateProps, action: ActionProps): StateProps => {
@@ -25,13 +23,13 @@ const reducer = (state: StateProps, action: ActionProps): StateProps => {
     case 'SET_MONTH':
       return {
         ...state,
-        month: payload ?? '',
+        month: payload,
         period: `${payload}-${state.year}`,
       }
     case 'SET_YEAR':
       return {
         ...state,
-        year: payload ?? '',
+        year: payload,
         period: `${state.month}-${payload}`,
       }
     default:
@@ -40,7 +38,7 @@ const reducer = (state: StateProps, action: ActionProps): StateProps => {
 }
 
 interface PeriodsContextType {
-  contextState: typeof initialState
+  contextState: StateProps
   contextDispatch: Dispatch<ActionProps>
   yearsList: string[]
 }
@@ -48,6 +46,22 @@ interface PeriodsContextType {
 export const PeriodsContext = createContext({} as PeriodsContextType)
 
 export function PeriodProvider({ children, yearsList }: PeriodProviderProps) {
+  const indexOfActualYear = yearsList.indexOf(
+    new Date().getFullYear().toString(),
+  )
+  const initialYear =
+    indexOfActualYear === -1
+      ? yearsList[yearsList.length - 1]
+      : yearsList[indexOfActualYear]
+
+  const initialMonth = String(new Date().getMonth() + 1).padStart(2, '0')
+
+  const initialState = {
+    year: initialYear,
+    month: initialMonth,
+    period: `${initialMonth}-${initialYear}`,
+  }
+
   const [contextState, contextDispatch] = useReducer(reducer, initialState)
 
   return (

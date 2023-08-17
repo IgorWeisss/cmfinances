@@ -35,11 +35,11 @@ export function YearCarousel() {
           font-bold sm:text-xl text-gray-600"
           style={inlineDynamicStyle}
         >
-          {navButtonsItems.map((item) => (
+          {navButtonsItems.map((item, index) => (
             <ToggleGroup.Item
               key={item}
               className="flex flex-none items-center w-1/3 justify-center data-[state=on]:text-gray-100 hover:brightness-125 px-3 transition-all"
-              value={navButtonsItems.indexOf(item).toString()}
+              value={index.toString()}
             >
               {item}
             </ToggleGroup.Item>
