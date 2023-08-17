@@ -1,9 +1,8 @@
-import { EntryData } from '@/hooks/useEntryData'
 import * as Checkbox from '@radix-ui/react-checkbox'
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
 
 import { Check, Edit, Trash2 } from 'lucide-react'
+import { EntryData } from './hooks/useEntryBoxData'
+import { useExpenseEntryData } from './hooks/useExpenseEntryData'
 
 interface ExpenseEntryProps {
   entryData: EntryData
@@ -16,14 +15,10 @@ export function ExpenseEntry({
   isSelected,
   handleSelectItem,
 }: ExpenseEntryProps) {
-  const formattedDueDate = format(new Date(dueDate), "dd'/'MM'/'yyyy", {
-    locale: ptBR,
+  const { formattedDueDate, formattedValue } = useExpenseEntryData({
+    dueDate,
+    value,
   })
-
-  const formattedValue = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(Number(value))
 
   return (
     <div className="">

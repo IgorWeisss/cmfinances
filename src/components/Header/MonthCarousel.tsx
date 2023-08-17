@@ -1,55 +1,19 @@
 'use client'
-import { EntrysContext, REDUCER_ACTIONS } from '@/contexts/EntrysContext'
+
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useContext, useEffect, useState } from 'react'
-
-const months = [
-  'JAN',
-  'FEV',
-  'MAR',
-  'ABR',
-  'MAI',
-  'JUN',
-  'JUL',
-  'AGO',
-  'SET',
-  'OUT',
-  'NOV',
-  'DEZ',
-]
-
-const toggleGroupClasses =
-  'flex flex-none items-center w-1/3 justify-center data-[state=on]:text-gray-100 hover:brightness-125 px-3 transition-all'
+import { useCarouselData } from './hooks/useCarouselData'
 
 export function MonthCarousel() {
-  const navButtonsItems = months
-
-  const initialIndex = new Date().getMonth()
-  const [index, setIndex] = useState(initialIndex)
-  const { contextDispatch } = useContext(EntrysContext)
-
-  useEffect(() => {
-    contextDispatch({
-      type: REDUCER_ACTIONS.SET_MONTH,
-      payload: String(index + 1).padStart(2, '0'),
-    })
-  }, [index, contextDispatch])
-
-  const handlePrev = () => {
-    setIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex))
-  }
-
-  const handleNext = () => {
-    setIndex((prevIndex) =>
-      prevIndex < navButtonsItems.length - 1 ? prevIndex + 1 : prevIndex,
-    )
-  }
-
-  const inlineDynamicStyle: { [key: string]: number } = {
-    '--index': index,
-  }
+  const {
+    handleNext,
+    handlePrev,
+    setIndex,
+    index,
+    inlineDynamicStyle,
+    navButtonsItems,
+  } = useCarouselData('MONTH')
 
   return (
     <div className="flex w-full sm:carousel">
@@ -75,7 +39,7 @@ export function MonthCarousel() {
           {navButtonsItems.map((item) => (
             <ToggleGroup.Item
               key={item}
-              className={toggleGroupClasses}
+              className="flex flex-none items-center w-1/3 justify-center data-[state=on]:text-gray-100 hover:brightness-125 px-3 transition-all"
               value={navButtonsItems.indexOf(item).toString()}
             >
               {item}

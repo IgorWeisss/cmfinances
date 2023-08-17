@@ -1,18 +1,18 @@
 'use client'
 
-import { ExpenseEntry } from '@/components/ExpenseEntry'
-import { IncomeEntry } from '@/components/IncomeEntry'
-import { EntrysContext } from '@/contexts/EntrysContext'
+import React, { useContext, useState } from 'react'
 import { getPeriodData } from '@/lib/axios'
 import { useQuery } from '@tanstack/react-query'
-import { FileX, Frown, Loader2 } from 'lucide-react'
+
+import { PeriodsContext } from '@/contexts/PeriodsContext'
+
 import {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useContext,
-  useState,
-} from 'react'
+  EmptyEntries,
+  ErrorEntries,
+  LoadingEntries,
+} from '../EntryAlternateStates'
+import { IncomeEntry } from '../IncomeEntry'
+import { ExpenseEntry } from '../ExpenseEntry'
 
 export interface EntryData {
   id: string
@@ -30,21 +30,20 @@ export interface EntryData {
   periodName: string
 }
 
-interface useEntryDataTypes {
-  formattedTotalValue: string
-  paidStateFilter: string
-  setPaidStateFilter: Dispatch<SetStateAction<string>>
-  EntryContent: () => ReactNode
-}
-
-export function useEntryData(type: 'IN' | 'OUT'): useEntryDataTypes {
+export function useEntryBoxData(type: 'IN' | 'OUT') {
   const [paidStateFilter, setPaidStateFilter] = useState('all')
   const [isSelected, setIsSelected] = useState<null | number>(null)
-  const { contextState } = useContext(EntrysContext)
+
+  const title = type === 'IN' ? 'Entradas' : 'Saídas'
+  const color = type === 'IN' ? 'text-green-500' : 'text-red-500'
+
+  const {
+    contextState: { period },
+  } = useContext(PeriodsContext)
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['periodData', contextState.period],
-    queryFn: () => getPeriodData(contextState.period),
+    queryKey: ['periodData', period],
+    queryFn: () => getPeriodData(period),
   })
 
   function applyFilters(data: EntryData[]): EntryData[] | null {
@@ -77,35 +76,11 @@ export function useEntryData(type: 'IN' | 'OUT'): useEntryDataTypes {
   }).format(totalValue)
 
   function EntryContent() {
-    if (isLoading) {
-      return (
-        <div className="flex h-full items-center justify-center text-gray-500">
-          <Loader2 size={60} className="animate-spin" />
-        </div>
-      )
-    }
+    if (isLoading) return <LoadingEntries />
 
-    if (isError) {
-      return (
-        <div className="flex flex-col h-full items-center justify-center p-10 text-gray-500">
-          <Frown size={60} className="" />
-          <p className="text-4xl font-bold mt-6">Opa...</p>
-          <p className="text-lg mt-2 font-bold text-center">
-            Deu ruim na hora de buscar os dados do servidor...
-          </p>
-        </div>
-      )
-    }
+    if (isError) return <ErrorEntries />
 
-    if (filteredData === null) {
-      return (
-        <div className="flex flex-col h-full items-center justify-center p-10 text-gray-500">
-          <FileX size={60} className="" />
-          <p className="text-4xl font-bold mt-6">Ops...</p>
-          <p className="text-lg mt-2 font-bold">Não tem nada aqui ainda...</p>
-        </div>
-      )
-    }
+    if (filteredData === null) return <EmptyEntries />
 
     const EntryVariant = type === 'IN' ? IncomeEntry : ExpenseEntry
 
@@ -120,6 +95,8 @@ export function useEntryData(type: 'IN' | 'OUT'): useEntryDataTypes {
   }
 
   return {
+    title,
+    color,
     formattedTotalValue,
     paidStateFilter,
     setPaidStateFilter,

@@ -1,7 +1,7 @@
 'use client'
 import { Dispatch, ReactNode, createContext, useReducer } from 'react'
 
-interface EntryProviderProps {
+interface PeriodProviderProps {
   children: ReactNode
   yearsList: string[]
 }
@@ -14,26 +14,21 @@ const initialState = {
 
 type StateProps = typeof initialState
 
-export enum REDUCER_ACTIONS {
-  SET_YEAR = 'SET_YEAR',
-  SET_MONTH = 'SET_MONTH',
-}
-
 interface ActionProps {
-  type: REDUCER_ACTIONS
+  type: 'SET_YEAR' | 'SET_MONTH'
   payload?: string
 }
 
 const reducer = (state: StateProps, action: ActionProps): StateProps => {
   const { type, payload } = action
   switch (type) {
-    case REDUCER_ACTIONS.SET_MONTH:
+    case 'SET_MONTH':
       return {
         ...state,
         month: payload ?? '',
         period: `${payload}-${state.year}`,
       }
-    case REDUCER_ACTIONS.SET_YEAR:
+    case 'SET_YEAR':
       return {
         ...state,
         year: payload ?? '',
@@ -44,32 +39,22 @@ const reducer = (state: StateProps, action: ActionProps): StateProps => {
   }
 }
 
-interface EntrysContextType {
+interface PeriodsContextType {
   contextState: typeof initialState
   contextDispatch: Dispatch<ActionProps>
   yearsList: string[]
 }
 
-export const EntrysContext = createContext({} as EntrysContextType)
+export const PeriodsContext = createContext({} as PeriodsContextType)
 
-export function EntryProvider({ children, yearsList }: EntryProviderProps) {
+export function PeriodProvider({ children, yearsList }: PeriodProviderProps) {
   const [contextState, contextDispatch] = useReducer(reducer, initialState)
-  // const [year, setYearState] = useState('')
-  // const [month, setMonthState] = useState('')
-
-  // function setYear(year: string) {
-  //   setYearState(year)
-  // }
-
-  // function setMonth(month: string) {
-  //   setMonthState(month)
-  // }
 
   return (
-    <EntrysContext.Provider
+    <PeriodsContext.Provider
       value={{ contextState, contextDispatch, yearsList }}
     >
       {children}
-    </EntrysContext.Provider>
+    </PeriodsContext.Provider>
   )
 }

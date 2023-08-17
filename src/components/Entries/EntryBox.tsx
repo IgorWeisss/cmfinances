@@ -3,22 +3,11 @@
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
 import { Plus } from 'lucide-react'
 
-import { useEntryData } from '@/hooks/useEntryData'
+import { useEntryBoxData } from './hooks/useEntryBoxData'
 
 const toggleGroupItemClasses = `data-[state=on]:bg-gradient-to-b data-[state=on]:from-orange-500
   data-[state=on]:to-orange-600 data-[state=on]:text-gray-100 rounded-[1.25rem]
   text-sm px-8 py-3 text-gray-600 hover:shadow-filter-box transition-all`
-
-const EntryBoxVariants = {
-  IN: {
-    title: 'Entradas',
-    color: 'text-green-500',
-  },
-  OUT: {
-    title: 'Saídas',
-    color: 'text-red-500',
-  },
-}
 
 interface EntryBoxProps {
   type: 'IN' | 'OUT'
@@ -26,13 +15,13 @@ interface EntryBoxProps {
 
 export function EntryBox({ type }: EntryBoxProps) {
   const {
+    title,
+    color,
     formattedTotalValue,
     paidStateFilter,
     setPaidStateFilter,
     EntryContent,
-  } = useEntryData(type)
-
-  const variantProps = EntryBoxVariants[type]
+  } = useEntryBoxData(type)
 
   return (
     <div
@@ -40,9 +29,7 @@ export function EntryBox({ type }: EntryBoxProps) {
       rounded-[1.25rem] overflow-hidden shadow-entry-box"
     >
       <header className="flex flex-col bg-gray-100 relative rounded-[1.25rem]">
-        <h2 className="p-4 text-gray-600 font-bold text-xl">
-          {variantProps.title}
-        </h2>
+        <h2 className="p-4 text-gray-600 font-bold text-xl">{title}</h2>
         <button
           className="w-10 h-10 bg-gradient-to-b from-orange-500 to-orange-600
           hover:brightness-125 transition-all absolute right-0 top-0
@@ -74,9 +61,7 @@ export function EntryBox({ type }: EntryBoxProps) {
       </div>
       <footer className="flex flex-col items-center justify-center py-2 gap-2 bg-gray-100 absolute bottom-0 w-full">
         <span className="text-gray-600 text-base leading-none">Total:</span>
-        <span
-          className={` font-bold text-2xl leading-none ${variantProps.color}`}
-        >
+        <span className={` font-bold text-2xl leading-none ${color}`}>
           {formattedTotalValue}
         </span>
       </footer>
