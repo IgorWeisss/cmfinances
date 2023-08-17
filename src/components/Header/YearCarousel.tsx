@@ -11,7 +11,7 @@ export function YearCarousel() {
     setIndex,
     index,
     navButtonsItems,
-    inlineDynamicStyle,
+    inlineDynamicTransformCarouselStyle,
   } = useCarouselData('YEAR')
 
   return (
@@ -33,7 +33,7 @@ export function YearCarousel() {
           }}
           className="flex transition-transform carousel-transform items-center justify-start
           font-bold sm:text-xl text-gray-600"
-          style={inlineDynamicStyle}
+          style={inlineDynamicTransformCarouselStyle}
         >
           {navButtonsItems.map((item, index) => (
             <ToggleGroup.Item

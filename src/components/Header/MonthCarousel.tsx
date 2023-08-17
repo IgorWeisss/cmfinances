@@ -11,7 +11,7 @@ export function MonthCarousel() {
     handlePrev,
     setIndex,
     index,
-    inlineDynamicStyle,
+    inlineDynamicTransformCarouselStyle,
     navButtonsItems,
   } = useCarouselData('MONTH')
 
@@ -34,7 +34,7 @@ export function MonthCarousel() {
           }}
           className="flex transition-transform carousel-transform items-center justify-start
           font-bold sm:text-xl text-gray-600"
-          style={inlineDynamicStyle}
+          style={inlineDynamicTransformCarouselStyle}
         >
           {navButtonsItems.map((item, index) => (
             <ToggleGroup.Item
