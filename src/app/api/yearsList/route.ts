@@ -1,22 +1,27 @@
 import { prisma } from '@/services/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
-// Returns a list of all periods and the count of entries for that period
+// Returns the list of years that have periods registered
 export async function GET(req: NextRequest) {
   const origin = req.headers.get('origin')
 
   try {
     const periods = await prisma.period.findMany({
-      orderBy: {
-        name: 'desc',
-      },
       select: {
         name: true,
-        _count: true,
       },
     })
+    const yearsList = periods
+      .reduce<string[]>((acc, cur) => {
+        const year = cur.name.slice(3)
+        if (acc.indexOf(year) === -1) {
+          acc.push(year)
+        }
+        return acc
+      }, [])
+      .sort()
 
-    return NextResponse.json(periods, {
+    return NextResponse.json(yearsList, {
       status: 200,
       statusText: 'Ok',
       headers: {

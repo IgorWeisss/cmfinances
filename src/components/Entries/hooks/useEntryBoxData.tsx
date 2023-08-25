@@ -1,18 +1,10 @@
 'use client'
 
-import React, { useContext, useState } from 'react'
-import { getPeriodData } from '@/lib/axios'
+import { useState } from 'react'
+import { getPeriodData } from '@/services/axios'
 import { useQuery } from '@tanstack/react-query'
 
-import { PeriodsContext } from '@/contexts/PeriodsContext'
-
-import {
-  EmptyEntries,
-  ErrorEntries,
-  LoadingEntries,
-} from '../EntryAlternateStates'
-import { IncomeEntry } from '../IncomeEntry'
-import { ExpenseEntry } from '../ExpenseEntry'
+import { usePeriodDataStore } from '@/stores/usePeriodDataStore'
 
 export interface EntryData {
   id: string
@@ -30,25 +22,30 @@ export interface EntryData {
   periodName: string
 }
 
-export function useEntryBoxData(type: 'IN' | 'OUT') {
+export function useEntryBoxData(variant: 'IN' | 'OUT') {
   const [paidStateFilter, setPaidStateFilter] = useState('all')
-  const [isSelected, setIsSelected] = useState<null | number>(null)
 
-  const title = type === 'IN' ? 'Entradas' : 'Saídas'
-  const color = type === 'IN' ? 'text-green-500' : 'text-red-500'
+  const title = variant === 'IN' ? 'Entradas' : 'Saídas'
+  let color = variant === 'IN' ? 'text-green-500' : 'text-red-500'
 
-  const {
-    contextState: { period },
-  } = useContext(PeriodsContext)
+  const period = usePeriodDataStore((state) => state.period)
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['periodData', period],
     queryFn: () => getPeriodData(period),
   })
 
+  if (isLoading) {
+    return { isLoading }
+  }
+
+  if (isError) {
+    return { isError }
+  }
+
   function applyFilters(data: EntryData[]): EntryData[] | null {
     const filteredDataByEntryType = data.filter(
-      (entry) => entry.entryType === type,
+      (entry) => entry.entryType === variant,
     )
 
     if (paidStateFilter !== 'all') {
@@ -70,36 +67,22 @@ export function useEntryBoxData(type: 'IN' | 'OUT') {
       ? 0
       : filteredData.reduce((acc, cur) => acc + Number(cur.value), 0)
 
-  const formattedTotalValue = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(totalValue)
+  const formattedTotalValue =
+    totalValue === 0
+      ? '---'
+      : new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }).format(totalValue)
 
-  function EntryContent() {
-    if (isLoading) return <LoadingEntries />
-
-    if (isError) return <ErrorEntries />
-
-    if (filteredData === null) return <EmptyEntries />
-
-    const EntryVariant = type === 'IN' ? IncomeEntry : ExpenseEntry
-
-    return filteredData.map((entry, index) => (
-      <EntryVariant
-        isSelected={isSelected === index}
-        handleSelectItem={() => setIsSelected(index)}
-        entryData={entry}
-        key={entry.id}
-      />
-    ))
-  }
+  if (formattedTotalValue === '---') color = 'text-gray-600'
 
   return {
     title,
     color,
     formattedTotalValue,
     paidStateFilter,
+    filteredData,
     setPaidStateFilter,
-    EntryContent,
   }
 }

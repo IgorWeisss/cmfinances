@@ -8,3 +8,12 @@ export async function getPeriodData(period: string) {
   })
   return data
 }
+
+export async function getYearsList() {
+  const { data } = await axios.get(`/api/yearsList`, {
+    headers: {
+      Authorization: process.env.NEXT_PUBLIC_API_KEY,
+    },
+  })
+  return data
+}

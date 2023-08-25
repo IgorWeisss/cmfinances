@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/services/prisma'
 import { addMonths, format, subMonths } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { NextRequest, NextResponse } from 'next/server'

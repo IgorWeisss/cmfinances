@@ -1,19 +1,18 @@
 'use client'
 
-import { PeriodsContext } from '@/contexts/PeriodsContext'
-import { useContext } from 'react'
+import { usePeriodDataStore } from '@/stores/usePeriodDataStore'
 
-export function useCarouselData(type: 'MONTH' | 'YEAR') {
-  const {
-    yearsList,
-    contextState: { monthIndex, yearIndex },
-    contextDispatch,
-  } = useContext(PeriodsContext)
+export function useCarouselData(variant: 'MONTH' | 'YEAR') {
+  // const { yearsList } = useContext(PeriodsContext)
 
-  // TODO: criar um useQuery pra fazer um fetch e buscar a lista de anos atualizada, usando yearsList como initialData
+  const yearsList = usePeriodDataStore((state) => state.yearsList)
+  const monthIndex = usePeriodDataStore((state) => state.monthIndex)
+  const yearIndex = usePeriodDataStore((state) => state.yearIndex)
+  const setMonth = usePeriodDataStore((state) => state.setMonth)
+  const setYear = usePeriodDataStore((state) => state.setYear)
 
   const navButtonsItems =
-    type === 'YEAR'
+    variant === 'YEAR'
       ? yearsList
       : [
           'JAN',
@@ -30,21 +29,15 @@ export function useCarouselData(type: 'MONTH' | 'YEAR') {
           'DEZ',
         ]
 
-  const index = type === 'YEAR' ? yearIndex : monthIndex
+  const index = variant === 'YEAR' ? yearIndex : monthIndex
 
   function setIndex(index: number) {
-    if (type === 'MONTH') {
-      contextDispatch({
-        type: 'SET_MONTH',
-        payload: String(index + 1).padStart(2, '0'),
-      })
+    if (variant === 'MONTH') {
+      setMonth(String(index + 1).padStart(2, '0'))
     } else {
-      contextDispatch({
-        type: 'SET_YEAR',
-        payload: {
-          year: yearsList[index],
-          yearIndex: index,
-        },
+      setYear({
+        year: yearsList![index],
+        yearIndex: index,
       })
     }
   }

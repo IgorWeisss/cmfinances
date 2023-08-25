@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/services/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
 // Returns the count of entries

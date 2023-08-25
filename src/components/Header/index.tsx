@@ -1,5 +1,4 @@
-import { MonthCarousel } from './MonthCarousel'
-import { YearCarousel } from './YearCarousel'
+import { PeriodCarousel } from './PeriodCarousel'
 
 interface HeaderProps {
   showMonths?: boolean
@@ -10,11 +9,11 @@ export function Header({ showMonths }: HeaderProps) {
     <header className="w-full bg-gradient-to-b from-blue-800 to-blue-900 px-4 sm:px-12 py-5 flex justify-between gap-2">
       <nav className="flex items-center justify-center">
         <div className="flex flex-col sm:flex-row">
-          <YearCarousel />
+          <PeriodCarousel variant="YEAR" />
           {showMonths && (
             <>
               <div className="sm:w-2 sm:mx-4 bg-gray-600"></div>
-              <MonthCarousel />
+              <PeriodCarousel variant="MONTH" />
             </>
           )}
         </div>

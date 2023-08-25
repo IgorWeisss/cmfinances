@@ -1,6 +1,6 @@
 import { prisma } from './prisma'
 
-export async function getYearsList() {
+export async function getYearsListFromServer() {
   const periods = await prisma.period.findMany({
     select: {
       name: true,

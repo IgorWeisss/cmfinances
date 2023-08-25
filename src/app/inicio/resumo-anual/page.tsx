@@ -1,5 +1,5 @@
 import { AnnualSummary } from '@/components/AnnualSummary'
-import { Header } from '@/components/Header/Header'
+import { Header } from '@/components/Header/index'
 
 export default function ResumoAnual() {
   return (

@@ -5,21 +5,21 @@ import * as ToggleGroup from '@radix-ui/react-toggle-group'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useCarouselData } from './hooks/useCarouselData'
 
-export function MonthCarousel() {
+export function PeriodCarousel({ variant }: { variant: 'MONTH' | 'YEAR' }) {
   const {
     handleNext,
     handlePrev,
     setIndex,
     index,
-    inlineDynamicTransformCarouselStyle,
     navButtonsItems,
-  } = useCarouselData('MONTH')
+    inlineDynamicTransformCarouselStyle,
+  } = useCarouselData(variant)
 
   return (
-    <div className="flex w-full sm:carousel">
+    <div className={`flex w-full ${variant === 'MONTH' && 'sm:carousel'}`}>
       <button
-        className={`text-gray-600 transition-colors ${
-          index > 0 && 'text-orange-500 hover:brightness-125'
+        className={`text-gray-600 cursor-not-allowed transition-colors ${
+          index > 0 && 'text-orange-500 cursor-pointer hover:brightness-125'
         }`}
         onClick={handlePrev}
       >
@@ -48,9 +48,9 @@ export function MonthCarousel() {
         </ToggleGroup.Root>
       </div>
       <button
-        className={`text-gray-600 transition-colors ${
+        className={`text-gray-600 cursor-not-allowed transition-colors ${
           index < navButtonsItems.length - 1 &&
-          'text-orange-500 hover:brightness-125'
+          'text-orange-500 cursor-pointer hover:brightness-125'
         }`}
         onClick={handleNext}
       >
