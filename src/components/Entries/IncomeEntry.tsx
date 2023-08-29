@@ -1,7 +1,8 @@
 import * as Checkbox from '@radix-ui/react-checkbox'
-import { AlertTriangle, Check, Edit, Trash2 } from 'lucide-react'
+import { AlertTriangle, Check, Trash2 } from 'lucide-react'
 import { EntryData } from '@/queries/useFetchPeriodData'
 import { useIncomeEntryData } from './hooks/useIncomeEntryData'
+import { UpdateIncomeEntry } from './UpdateIncomeEntry'
 
 interface IncomeEntryProps {
   entryData: EntryData
@@ -51,14 +52,7 @@ export function IncomeEntry({
           )}
           <p className="text-gray-100 ">{formattedDueDate}</p>
           <div className={`flex gap-2 ${!isSelected && 'hidden'}`}>
-            <button title="Editar">
-              <Edit
-                size={24}
-                className={`${
-                  clientId ? 'text-emerald-500' : 'text-yellow-500'
-                } hover:brightness-125 transition-all`}
-              />
-            </button>
+            <UpdateIncomeEntry accentColor={clientId} />
             <button title="Deletar">
               <Trash2
                 size={24}
