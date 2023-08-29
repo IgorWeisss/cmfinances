@@ -1,47 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { getPeriodData } from '@/services/axios'
-import { useQuery } from '@tanstack/react-query'
 
 import { usePeriodDataStore } from '@/stores/usePeriodDataStore'
-
-export interface EntryData {
-  id: string
-  createdAt: string
-  updatedAt: string
-  dueDate: string
-  description: string
-  client: string | null
-  clientId: string | null
-  value: string
-  payMethod: string | null
-  paid: boolean
-  entryType: string
-  userId: string
-  periodName: string
-}
+import { EntryData, useFetchPeriodData } from '@/queries/useFetchPeriodData'
 
 export function useEntryBoxData(variant: 'IN' | 'OUT') {
-  const [paidStateFilter, setPaidStateFilter] = useState('all')
-
-  const title = variant === 'IN' ? 'Entradas' : 'Saídas'
-  let color = variant === 'IN' ? 'text-green-500' : 'text-red-500'
-
-  const period = usePeriodDataStore((state) => state.period)
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['periodData', period],
-    queryFn: () => getPeriodData(period),
-  })
-
-  if (isLoading) {
-    return { isLoading }
-  }
-
-  if (isError) {
-    return { isError }
-  }
+  // TODO: Rearrange states in a new Zustand Store
+  // TODO: Extract filteredData to somewhere else to avoid prop drilling
 
   function applyFilters(data: EntryData[]): EntryData[] | null {
     const filteredDataByEntryType = data.filter(
@@ -56,6 +22,20 @@ export function useEntryBoxData(variant: 'IN' | 'OUT') {
       return filteredDataByPaidState.length > 0 ? filteredDataByPaidState : null
     }
     return filteredDataByEntryType.length > 0 ? filteredDataByEntryType : null
+  }
+
+  const [paidStateFilter, setPaidStateFilter] = useState('all')
+
+  const period = usePeriodDataStore((state) => state.period)
+
+  const { data, isLoading, isError } = useFetchPeriodData(period)
+
+  if (isLoading) {
+    return { isLoading }
+  }
+
+  if (isError) {
+    return { isError }
   }
 
   const filteredData: EntryData[] | null = !data
@@ -75,10 +55,12 @@ export function useEntryBoxData(variant: 'IN' | 'OUT') {
           currency: 'BRL',
         }).format(totalValue)
 
+  let color = variant === 'IN' ? 'text-green-500' : 'text-red-500'
+
   if (formattedTotalValue === '---') color = 'text-gray-600'
 
   return {
-    title,
+    title: variant === 'IN' ? 'Entradas' : 'Saídas',
     color,
     formattedTotalValue,
     paidStateFilter,

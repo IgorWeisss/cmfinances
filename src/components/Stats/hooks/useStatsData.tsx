@@ -1,18 +1,10 @@
 'use client'
 
-import { EntryData } from '@/components/Entries/hooks/useEntryBoxData'
-import { getPeriodData } from '@/services/axios'
-import { useQuery } from '@tanstack/react-query'
+import {
+  DataReturnType,
+  useFetchPeriodData,
+} from '@/queries/useFetchPeriodData'
 import { usePeriodDataStore } from '@/stores/usePeriodDataStore'
-
-interface DataReturnType {
-  id: string
-  name: string
-  _count: {
-    entries: number
-  }
-  entries: EntryData[]
-}
 
 function formatValueToCurrency(value: number) {
   return new Intl.NumberFormat('pt-BR', {
@@ -103,7 +95,7 @@ function getTotalProfit(
   }
 }
 
-// TODO Desenvolver esse método
+// TODO: Develop this method
 
 function getLastYearAccumulatedIncome(data: DataReturnType | null) {
   return {
@@ -162,10 +154,7 @@ function getAvailableMoney(data: DataReturnType | null) {
 export function useStatsData() {
   const period = usePeriodDataStore((state) => state.period)
 
-  const { data, isLoading, isError } = useQuery<DataReturnType | null>({
-    queryKey: ['periodData', period],
-    queryFn: () => getPeriodData(period),
-  })
+  const { data, isLoading, isError } = useFetchPeriodData(period)
 
   if (isLoading) {
     return { isLoading }

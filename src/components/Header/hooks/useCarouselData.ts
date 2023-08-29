@@ -3,8 +3,6 @@
 import { usePeriodDataStore } from '@/stores/usePeriodDataStore'
 
 export function useCarouselData(variant: 'MONTH' | 'YEAR') {
-  // const { yearsList } = useContext(PeriodsContext)
-
   const yearsList = usePeriodDataStore((state) => state.yearsList)
   const monthIndex = usePeriodDataStore((state) => state.monthIndex)
   const yearIndex = usePeriodDataStore((state) => state.yearIndex)

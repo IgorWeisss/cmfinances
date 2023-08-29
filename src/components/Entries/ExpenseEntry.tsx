@@ -1,7 +1,7 @@
 import * as Checkbox from '@radix-ui/react-checkbox'
 
 import { Check, Edit, Trash2 } from 'lucide-react'
-import { EntryData } from './hooks/useEntryBoxData'
+import { EntryData } from '@/queries/useFetchPeriodData'
 import { useExpenseEntryData } from './hooks/useExpenseEntryData'
 
 interface ExpenseEntryProps {

@@ -4,7 +4,7 @@ import { FileX } from 'lucide-react'
 import { useState } from 'react'
 import { IncomeEntry } from './IncomeEntry'
 import { ExpenseEntry } from './ExpenseEntry'
-import { EntryData } from './hooks/useEntryBoxData'
+import { EntryData } from '@/queries/useFetchPeriodData'
 
 interface EntryContentProps {
   filteredData: EntryData[] | null

@@ -1,6 +1,6 @@
 import * as Checkbox from '@radix-ui/react-checkbox'
 import { AlertTriangle, Check, Edit, Trash2 } from 'lucide-react'
-import { EntryData } from './hooks/useEntryBoxData'
+import { EntryData } from '@/queries/useFetchPeriodData'
 import { useIncomeEntryData } from './hooks/useIncomeEntryData'
 
 interface IncomeEntryProps {
@@ -23,7 +23,7 @@ export function IncomeEntry({
       value,
     })
   return (
-    <div className="">
+    <div>
       <div
         className="relative overflow-hidden flex gap-6 px-6 py-4 rounded-xl"
         onClick={handleSelectItem}
@@ -42,7 +42,9 @@ export function IncomeEntry({
           {payMethodStyle && (
             <div
               title={payMethod!}
-              className={`flex items-center justify-center bg-gradient-to-b ${payMethodStyle.colors} h-12 w-12 rounded-full text-gray-100 font-bold text-base`}
+              className={`flex items-center justify-center bg-gradient-to-b
+              ${payMethodStyle.colors} h-12 w-12 rounded-full text-gray-100 
+              font-bold text-base`}
             >
               {payMethodStyle.short}
             </div>

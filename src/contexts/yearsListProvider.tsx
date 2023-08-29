@@ -1,8 +1,7 @@
 'use client'
 
-import { getYearsList } from '@/services/axios'
+import { useFetchYearsList } from '@/queries/useFetchYearsList'
 import { usePeriodDataStore } from '@/stores/usePeriodDataStore'
-import { useQuery } from '@tanstack/react-query'
 import { ReactNode, useEffect } from 'react'
 
 interface PeriodProviderProps {
@@ -16,11 +15,7 @@ export function YearsListProvider({
 }: PeriodProviderProps) {
   const setYearsList = usePeriodDataStore((state) => state.setYearsList)
 
-  const { data, isLoading, isError } = useQuery<string[]>({
-    queryKey: ['yearsList'],
-    queryFn: () => getYearsList(),
-    initialData: yearsList,
-  })
+  const { data, isLoading, isError } = useFetchYearsList(yearsList)
 
   useEffect(() => {
     if (data) {

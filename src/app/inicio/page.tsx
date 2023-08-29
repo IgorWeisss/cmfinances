@@ -16,6 +16,7 @@ export default function Inicio() {
           <div
             className="w-full h-container bg-gradient-to-b from-blue-800
             to-blue-900 rounded-[1.25rem] overflow-hidden shadow-entry-box"
+            // TODO: Develop chart here
           ></div>
         </div>
       </main>
