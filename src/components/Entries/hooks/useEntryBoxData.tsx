@@ -5,25 +5,26 @@ import { useState } from 'react'
 import { usePeriodDataStore } from '@/stores/usePeriodDataStore'
 import { EntryData, useFetchPeriodData } from '@/queries/useFetchPeriodData'
 
-export function useEntryBoxData(variant: 'IN' | 'OUT') {
-  // TODO: Rearrange states in a new Zustand Store
-  // TODO: Extract filteredData to somewhere else to avoid prop drilling
+function filterDataByEntryTypeAndPaidState(
+  data: EntryData[],
+  paidStateFilter: string,
+  variant: 'IN' | 'OUT',
+): EntryData[] | null {
+  const filteredDataByEntryType = data.filter(
+    (entry) => entry.entryType === variant,
+  )
 
-  function applyFilters(data: EntryData[]): EntryData[] | null {
-    const filteredDataByEntryType = data.filter(
-      (entry) => entry.entryType === variant,
+  if (paidStateFilter !== 'all') {
+    const filterValue = paidStateFilter === 'paid'
+    const filteredDataByPaidState = filteredDataByEntryType.filter(
+      (entry) => entry.paid === filterValue,
     )
-
-    if (paidStateFilter !== 'all') {
-      const filterValue = paidStateFilter === 'paid'
-      const filteredDataByPaidState = filteredDataByEntryType.filter(
-        (entry) => entry.paid === filterValue,
-      )
-      return filteredDataByPaidState.length > 0 ? filteredDataByPaidState : null
-    }
-    return filteredDataByEntryType.length > 0 ? filteredDataByEntryType : null
+    return filteredDataByPaidState.length > 0 ? filteredDataByPaidState : null
   }
+  return filteredDataByEntryType.length > 0 ? filteredDataByEntryType : null
+}
 
+export function useEntryBoxData(variant: 'IN' | 'OUT') {
   const [paidStateFilter, setPaidStateFilter] = useState('all')
 
   const period = usePeriodDataStore((state) => state.period)
@@ -40,7 +41,7 @@ export function useEntryBoxData(variant: 'IN' | 'OUT') {
 
   const filteredData: EntryData[] | null = !data
     ? null
-    : applyFilters(data.entries)
+    : filterDataByEntryTypeAndPaidState(data.entries, paidStateFilter, variant)
 
   const totalValue =
     filteredData === null
