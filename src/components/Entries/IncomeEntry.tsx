@@ -1,8 +1,9 @@
-import * as Checkbox from '@radix-ui/react-checkbox'
-import { AlertTriangle, Check, Trash2 } from 'lucide-react'
 import { EntryData } from '@/queries/useFetchPeriodData'
+import { useEntryDialogStore } from '@/stores/useEntryDialogStore'
+import * as Checkbox from '@radix-ui/react-checkbox'
+import { AlertTriangle, Check, Edit, Trash2 } from 'lucide-react'
+import { UpdateIncomeEntryDialog } from './UpdateIncomeEntryDialog'
 import { useIncomeEntryData } from './hooks/useIncomeEntryData'
-import { UpdateIncomeEntry } from './UpdateIncomeEntry'
 
 interface IncomeEntryProps {
   entryData: EntryData
@@ -11,20 +12,38 @@ interface IncomeEntryProps {
 }
 
 export function IncomeEntry({
-  entryData: { client, clientId, description, dueDate, paid, payMethod, value },
+  entryData,
   isSelected,
   handleSelectItem,
 }: IncomeEntryProps) {
-  const { formattedDueDate, formattedValue, payMethodStyle, separatorColor } =
-    useIncomeEntryData({
-      clientId,
-      dueDate,
-      isSelected,
-      payMethod,
-      value,
-    })
+  const updateEntryData = useEntryDialogStore(
+    (state) => state.updateEntryDialog.data,
+  )
+
+  const shouldRenderUpdateDialog = updateEntryData?.id === entryData.id
+
+  const { client, clientId, description, dueDate, paid, payMethod, value } =
+    entryData
+
+  const {
+    formattedDueDate,
+    formattedValue,
+    payMethodStyle,
+    separatorColor,
+    setUpdateEntryData,
+  } = useIncomeEntryData({
+    clientId,
+    dueDate,
+    isSelected,
+    payMethod,
+    value,
+  })
+
   return (
     <div>
+      {shouldRenderUpdateDialog && (
+        <UpdateIncomeEntryDialog data={updateEntryData} />
+      )}
       <div
         className="relative overflow-hidden flex gap-6 px-6 py-4 rounded-xl"
         onClick={handleSelectItem}
@@ -52,7 +71,19 @@ export function IncomeEntry({
           )}
           <p className="text-gray-100 ">{formattedDueDate}</p>
           <div className={`flex gap-2 ${!isSelected && 'hidden'}`}>
-            <UpdateIncomeEntry accentColor={clientId} />
+            <button
+              title="Editar"
+              onClick={() => {
+                setUpdateEntryData(entryData)
+              }}
+            >
+              <Edit
+                size={24}
+                className={`${
+                  clientId ? 'text-emerald-500' : 'text-yellow-500'
+                } hover:brightness-125 transition-all`}
+              />
+            </button>
             <button title="Deletar">
               <Trash2
                 size={24}

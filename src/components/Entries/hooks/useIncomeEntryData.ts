@@ -1,3 +1,4 @@
+import { useEntryDialogStore } from '@/stores/useEntryDialogStore'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
@@ -81,6 +82,10 @@ export function useIncomeEntryData({
     },
   }
 
+  const setUpdateEntryData = useEntryDialogStore(
+    (state) => state.setUpdateEntryData,
+  )
+
   const formattedDueDate = format(new Date(dueDate), "dd'/'MM'/'yyyy", {
     locale: ptBR,
   })
@@ -109,5 +114,6 @@ export function useIncomeEntryData({
     formattedValue,
     payMethodStyle,
     separatorColor,
+    setUpdateEntryData,
   }
 }
