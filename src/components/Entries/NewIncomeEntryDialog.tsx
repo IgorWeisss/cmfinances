@@ -14,7 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Popover } from '@radix-ui/react-popover'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { CalendarDays, Loader2 } from 'lucide-react'
+import { AlertTriangle, CalendarDays, Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '../ui/button'
@@ -116,6 +116,15 @@ export function NewIncomeEntryDialog() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4"
           >
+            <div className="flex flex-row gap-4 p-4 rounded-md border border-yellow-500 text-yellow-500">
+              <AlertTriangle className="w-20 h-10" />
+              <p>
+                <strong className="font-bold">Atenção!</strong> Novas entradas
+                devem ser cadastradas sempre pelo menu ADM do site. Utilizar
+                essa função apenas para entradas de clientes não cadastrados no
+                site.
+              </p>
+            </div>
             <FormField
               control={form.control}
               name="client"
