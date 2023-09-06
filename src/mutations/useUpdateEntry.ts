@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
-import { generateToast } from '../components/ui/generateToas'
+import { generateToast } from '../components/ui/generateToast'
 
 export interface UpdateEntryProps {
   id: string

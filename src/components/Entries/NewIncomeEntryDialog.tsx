@@ -8,8 +8,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { cn } from '@/lib/utils'
-import { UpdateEntryProps, useUpdateEntry } from '@/mutations/useUpdateEntry'
-import { EntryData } from '@/queries/useFetchPeriodData'
+import { PostNewEntryProps, usePostNewEntry } from '@/mutations/usePostNewEntry'
 import { useEntryDialogStore } from '@/stores/useEntryDialogStore'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Popover } from '@radix-ui/react-popover'
@@ -53,7 +52,9 @@ const formSchema = z.object({
       message: 'O valor não pode ser R$ 0,00',
     }),
   paid: z.boolean(),
-  payMethod: z.string().min(1, { message: 'Escolha a forma de pagamento' }),
+  payMethod: z.string({
+    required_error: 'Escolha a forma de pagamento',
+  }),
 })
 
 function formatCurrency(value: string) {
@@ -66,74 +67,35 @@ function formatCurrency(value: string) {
   }).format(newValue)
 }
 
-interface GenericObjetc {
-  [key: string]: any
-}
-
-function getDiffProps(rawData: GenericObjetc, values: GenericObjetc) {
-  const data: GenericObjetc = {
-    ...rawData,
-    value: Number(rawData.value),
-  }
-  const stringifiedDate = JSON.stringify(values.dueDate).replace(/"/g, '')
-  const unformattedValue = parseFloat(values.value.replace(/\D/g, '')) / 100
-  const processedValues: GenericObjetc = {
-    ...values,
-    dueDate: stringifiedDate,
-    value: unformattedValue,
-  }
-  const uncommonProperties: GenericObjetc = {}
-
-  for (const key in processedValues) {
-    if (
-      Object.hasOwnProperty.call(data, key) &&
-      data[key] !== processedValues[key]
-    ) {
-      uncommonProperties[key] = processedValues[key]
-    }
-  }
-
-  if (Object.hasOwnProperty.call(data, 'id')) {
-    uncommonProperties.id = data.id
-  }
-
-  return uncommonProperties as UpdateEntryProps
-}
-
-interface UpdateIncomeEntryProps {
-  data: EntryData
-}
-
-export function UpdateIncomeEntryDialog({ data }: UpdateIncomeEntryProps) {
-  const open = useEntryDialogStore((state) => state.updateEntryData.openState)
-  const setOpen = useEntryDialogStore((state) => state.setUpdateEntryData)
-
-  const { client, description, dueDate, payMethod, value, paid } = data
+export function NewIncomeEntryDialog() {
+  const open = useEntryDialogStore((state) => state.newEntryOpenState)
+  const setOpen = useEntryDialogStore((state) => state.setNewEntryOpenState)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      client: client!,
-      description,
-      dueDate: new Date(dueDate),
-      payMethod: payMethod!,
-      value: new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-      }).format(Number(value)),
-      paid,
+      client: '',
+      description: '',
+      paid: false,
+      value: formatCurrency('0'),
     },
   })
 
   const isSubmitDisabled = Object.keys(form.formState.errors).length !== 0
 
-  const { mutate, isLoading } = useUpdateEntry()
+  const { mutate, isLoading } = usePostNewEntry()
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const diffValues = getDiffProps(data, values)
-    mutate(diffValues, {
+    const newEntryData: PostNewEntryProps = {
+      ...values,
+      entryType: 'IN',
+      // TODO: HARD-CODED userId!!! Change to dynamic after auth
+      userId: '280eeb0c-915b-4495-8907-9fd6e8dcf561',
+      value: parseFloat(values.value.replace(/\D/g, '')) / 100,
+    }
+    mutate(newEntryData, {
       onSuccess: () => {
-        setOpen(null)
+        setOpen(false)
       },
     })
   }
@@ -142,16 +104,15 @@ export function UpdateIncomeEntryDialog({ data }: UpdateIncomeEntryProps) {
     <AlertDialog open={open}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Editar registro</AlertDialogTitle>
+          <AlertDialogTitle>Cadastrar nova entrada</AlertDialogTitle>
           <AlertDialogDescription>
-            Faça as alterações que deseja abaixo. Clique em Salvar quando tiver
-            terminado.
+            Complete os dados abaixo. Clique em Salvar quando tiver terminado.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <Form {...form}>
           <form
-            id="updateIncomeEntryForm"
+            id="newIncomeEntryForm"
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4"
           >
@@ -330,7 +291,7 @@ export function UpdateIncomeEntryDialog({ data }: UpdateIncomeEntryProps) {
         <AlertDialogFooter>
           <AlertDialogCancel
             onClick={() => {
-              setOpen(null)
+              setOpen(false)
               form.reset()
             }}
           >
@@ -339,7 +300,7 @@ export function UpdateIncomeEntryDialog({ data }: UpdateIncomeEntryProps) {
           <Button
             disabled={isSubmitDisabled || isLoading}
             type="submit"
-            form="updateIncomeEntryForm"
+            form="newIncomeEntryForm"
           >
             {isLoading ? <Loader2 className="animate-spin" /> : 'Salvar'}
           </Button>

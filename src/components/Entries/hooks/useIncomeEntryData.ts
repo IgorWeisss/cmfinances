@@ -3,6 +3,7 @@ import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
 interface useIncomeEntryDataProps {
+  id: string
   dueDate: string
   value: string
   payMethod: string | null
@@ -11,6 +12,7 @@ interface useIncomeEntryDataProps {
 }
 
 export function useIncomeEntryData({
+  id,
   clientId,
   dueDate,
   isSelected,
@@ -86,6 +88,12 @@ export function useIncomeEntryData({
     (state) => state.setUpdateEntryData,
   )
 
+  const updateEntryData = useEntryDialogStore(
+    (state) => state.updateEntryData.data,
+  )
+
+  const shouldRenderUpdateDialog = updateEntryData?.id === id
+
   const formattedDueDate = format(new Date(dueDate), "dd'/'MM'/'yyyy", {
     locale: ptBR,
   })
@@ -114,6 +122,8 @@ export function useIncomeEntryData({
     formattedValue,
     payMethodStyle,
     separatorColor,
+    updateEntryData,
+    shouldRenderUpdateDialog,
     setUpdateEntryData,
   }
 }

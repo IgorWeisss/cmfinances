@@ -5,6 +5,8 @@ import { AlertTriangle, Frown, Loader2, Plus } from 'lucide-react'
 
 import { useEntryBoxData } from './hooks/useEntryBoxData'
 import { EntryContent } from './EntryContent'
+import { useEntryDialogStore } from '@/stores/useEntryDialogStore'
+import { NewIncomeEntryDialog } from './NewIncomeEntryDialog'
 
 const toggleGroupItemClasses = `data-[state=on]:bg-gradient-to-b data-[state=on]:from-orange-500
   data-[state=on]:to-orange-600 data-[state=on]:text-gray-100 rounded-[1.25rem]
@@ -25,6 +27,10 @@ export function EntryBox({ variant }: ExtryBoxProps) {
     filteredData,
     setPaidStateFilter,
   } = useEntryBoxData(variant)
+
+  const setOpenState = useEntryDialogStore(
+    (state) => state.setNewEntryOpenState,
+  )
 
   if (isLoading) {
     return (
@@ -91,12 +97,16 @@ export function EntryBox({ variant }: ExtryBoxProps) {
       className="relative bg-gradient-to-b from-blue-800 to-blue-900 h-full w-full
       rounded-[1.25rem] overflow-hidden shadow-entry-box"
     >
+      {variant === 'IN' ? <NewIncomeEntryDialog /> : null}
       <header className="flex flex-col bg-gray-100 relative rounded-[1.25rem]">
         <h2 className="p-4 text-gray-600 font-bold text-xl">{title}</h2>
         <button
           className="w-10 h-10 bg-gradient-to-b from-orange-500 to-orange-600
           hover:brightness-125 transition-all absolute right-0 top-0
           rounded-bl-[1.25rem] text-gray-100 flex items-center justify-center"
+          onClick={() => {
+            setOpenState(true)
+          }}
         >
           <Plus size={20} />
         </button>

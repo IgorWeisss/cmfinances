@@ -2,25 +2,34 @@ import { EntryData } from '@/queries/useFetchPeriodData'
 import { create } from 'zustand'
 
 interface Store {
-  updateEntryDialog: {
+  updateEntryData: {
     openState: boolean
     data: EntryData | null
   }
+  newEntryOpenState: boolean
   setUpdateEntryData: (data: EntryData | null) => void
+  setNewEntryOpenState: (openState: boolean) => void
 }
 
 export const useEntryDialogStore = create<Store>()((set) => ({
-  updateEntryDialog: {
+  updateEntryData: {
     openState: false,
     data: null,
   },
+  newEntryOpenState: false,
   setUpdateEntryData: (data) => {
     set((state) => ({
       ...state,
-      updateEntryDialog: {
+      updateEntryData: {
         data,
-        openState: !state.updateEntryDialog.openState,
+        openState: !state.updateEntryData.openState,
       },
+    }))
+  },
+  setNewEntryOpenState: (openState) => {
+    set((state) => ({
+      ...state,
+      newEntryOpenState: openState,
     }))
   },
 }))

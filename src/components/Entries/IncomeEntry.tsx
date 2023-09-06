@@ -1,5 +1,4 @@
 import { EntryData } from '@/queries/useFetchPeriodData'
-import { useEntryDialogStore } from '@/stores/useEntryDialogStore'
 import * as Checkbox from '@radix-ui/react-checkbox'
 import { AlertTriangle, Check, Edit, Trash2 } from 'lucide-react'
 import { UpdateIncomeEntryDialog } from './UpdateIncomeEntryDialog'
@@ -16,13 +15,7 @@ export function IncomeEntry({
   isSelected,
   handleSelectItem,
 }: IncomeEntryProps) {
-  const updateEntryData = useEntryDialogStore(
-    (state) => state.updateEntryDialog.data,
-  )
-
-  const shouldRenderUpdateDialog = updateEntryData?.id === entryData.id
-
-  const { client, clientId, description, dueDate, paid, payMethod, value } =
+  const { id, client, clientId, description, dueDate, paid, payMethod, value } =
     entryData
 
   const {
@@ -30,8 +23,11 @@ export function IncomeEntry({
     formattedValue,
     payMethodStyle,
     separatorColor,
+    updateEntryData,
+    shouldRenderUpdateDialog,
     setUpdateEntryData,
   } = useIncomeEntryData({
+    id,
     clientId,
     dueDate,
     isSelected,
@@ -42,7 +38,7 @@ export function IncomeEntry({
   return (
     <div>
       {shouldRenderUpdateDialog && (
-        <UpdateIncomeEntryDialog data={updateEntryData} />
+        <UpdateIncomeEntryDialog data={updateEntryData!} />
       )}
       <div
         className="relative overflow-hidden flex gap-6 px-6 py-4 rounded-xl"
