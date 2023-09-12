@@ -15,10 +15,6 @@ export async function middleware(request: NextRequest, response: NextResponse) {
     const auth = request.headers.get('Authorization')
     const verifiedApiRequest = auth === process.env.NEXT_PUBLIC_API_KEY
 
-    console.log('origin: ', origin)
-    console.log('allowedOrigins: ', allowedOrigins)
-    console.log('includes? ', allowedOrigins.includes(origin!))
-
     if (origin && !allowedOrigins.includes(origin)) {
       return new NextResponse(null, {
         status: 400,
@@ -41,19 +37,19 @@ export async function middleware(request: NextRequest, response: NextResponse) {
   }
 
   // Auth for the app Main page
-  // if (process.env.NODE_ENV === 'production') {
-  //   if (request.nextUrl.pathname.startsWith('/inicio')) {
-  //     const token = request.cookies.get('token')?.value
+  if (process.env.NODE_ENV === 'production') {
+    if (request.nextUrl.pathname.startsWith('/inicio')) {
+      const token = request.cookies.get('token')?.value
 
-  //     if (!token) {
-  //       return NextResponse.redirect(new URL('/', request.url), {
-  //         headers: {
-  //           'Set-cookie': `redirectTo=${request.url}; HttpOnly; Path=/; max-age=60;`,
-  //         },
-  //       })
-  //     }
-  //   }
+      if (!token) {
+        return NextResponse.redirect(new URL('/', request.url), {
+          headers: {
+            'Set-cookie': `redirectTo=${request.url}; HttpOnly; Path=/; max-age=60;`,
+          },
+        })
+      }
+    }
 
-  //   return NextResponse.next()
-  // }
+    return NextResponse.next()
+  }
 }
