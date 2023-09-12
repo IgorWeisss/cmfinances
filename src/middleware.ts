@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const allowedOrigins =
   process.env.NODE_ENV === 'production'
-    ? [process.env.NEXT_PUBLIC_ALLOWED_ORIGIN]
+    ? process.env.NEXT_PUBLIC_ALLOWED_ORIGIN.split(',')
     : [
         'http://localhost:3000',
         'chrome-extension://amknoiejhlmhancpahfcfcfhllgkpbld',
@@ -12,7 +12,6 @@ export async function middleware(request: NextRequest, response: NextResponse) {
   // Auth for API routes
   if (request.nextUrl.pathname.startsWith('/api')) {
     const origin = request.headers.get('origin')
-    console.log(origin)
     const auth = request.headers.get('Authorization')
     const verifiedApiRequest = auth === process.env.NEXT_PUBLIC_API_KEY
 
