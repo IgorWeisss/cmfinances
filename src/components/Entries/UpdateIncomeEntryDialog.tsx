@@ -38,6 +38,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select'
+import { generateToast } from '../ui/generateToast'
 
 const formSchema = z.object({
   dueDate: z.date({
@@ -105,8 +106,10 @@ interface UpdateIncomeEntryProps {
 }
 
 export function UpdateIncomeEntryDialog({ data }: UpdateIncomeEntryProps) {
-  const open = useEntryDialogStore((state) => state.updateEntryData.openState)
-  const setOpen = useEntryDialogStore((state) => state.setUpdateEntryData)
+  const open = useEntryDialogStore(
+    (state) => state.updateIncomeEntryData.openState,
+  )
+  const setOpen = useEntryDialogStore((state) => state.setUpdateIncomeEntryData)
 
   const { client, description, dueDate, payMethod, value, paid } = data
 
@@ -130,10 +133,18 @@ export function UpdateIncomeEntryDialog({ data }: UpdateIncomeEntryProps) {
   const { mutate, isLoading } = useUpdateEntry()
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    const { loadingToast, successToast, errorToast } = generateToast()
+    const toastId = String(new Date())
+    loadingToast(toastId)
+
     const diffValues = getDiffProps(data, values)
     mutate(diffValues, {
       onSuccess: () => {
         setOpen(null)
+        successToast(toastId, 'Entrada alterada com sucesso')
+      },
+      onError: () => {
+        errorToast(toastId, 'Ops... Algo deu errado...')
       },
     })
   }
@@ -142,7 +153,7 @@ export function UpdateIncomeEntryDialog({ data }: UpdateIncomeEntryProps) {
     <AlertDialog open={open}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Editar registro</AlertDialogTitle>
+          <AlertDialogTitle>Editar entrada</AlertDialogTitle>
           <AlertDialogDescription>
             Faça as alterações que deseja abaixo. Clique em Salvar quando tiver
             terminado.

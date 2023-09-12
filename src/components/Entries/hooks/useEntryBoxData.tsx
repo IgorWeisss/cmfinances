@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import { usePeriodDataStore } from '@/stores/usePeriodDataStore'
 import { EntryData, useFetchPeriodData } from '@/queries/useFetchPeriodData'
+import { useEntryDialogStore } from '@/stores/useEntryDialogStore'
 
 function filterDataByEntryTypeAndPaidState(
   data: EntryData[],
@@ -28,6 +29,15 @@ export function useEntryBoxData(variant: 'IN' | 'OUT') {
   const [paidStateFilter, setPaidStateFilter] = useState('all')
 
   const period = usePeriodDataStore((state) => state.period)
+
+  const openDialogStateVariant =
+    variant === 'IN'
+      ? 'setNewIncomeEntryOpenState'
+      : 'setNewExpensesEntryOpenState'
+
+  const setDialogOpenState = useEntryDialogStore(
+    (state) => state[openDialogStateVariant],
+  )
 
   const { data, isLoading, isError } = useFetchPeriodData(period)
 
@@ -67,5 +77,6 @@ export function useEntryBoxData(variant: 'IN' | 'OUT') {
     paidStateFilter,
     filteredData,
     setPaidStateFilter,
+    setDialogOpenState,
   }
 }

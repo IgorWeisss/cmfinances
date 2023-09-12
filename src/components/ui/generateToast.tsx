@@ -1,9 +1,9 @@
 import { toast } from 'react-toastify'
 
 export function generateToast() {
-  const toastId = String(new Date())
+  // const toastId = 'toastId'
 
-  const loadingToast = () =>
+  const loadingToast = (toastId: string) =>
     toast.loading(
       <div className="ml-2 text-lg text-zinc-900">
         <p className="text-lg font-bold text-zinc-900">Aguarde...</p>
@@ -15,7 +15,7 @@ export function generateToast() {
       },
     )
 
-  const successToast = (successMsg: string) =>
+  const successToast = (toastId: string, successMsg: string) =>
     toast.update(toastId, {
       render: (
         <div className="ml-2 text-lg text-zinc-900">
@@ -29,7 +29,7 @@ export function generateToast() {
       hideProgressBar: false,
     })
 
-  const errorToast = (errorMsg: string) =>
+  const errorToast = (toastId: string, errorMsg: string) =>
     toast.update(toastId, {
       render: (
         <div className="ml-2 text-lg text-zinc-900">

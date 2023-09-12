@@ -26,6 +26,7 @@ export function IncomeEntry({
     updateEntryData,
     shouldRenderUpdateDialog,
     setUpdateEntryData,
+    setDeleteEntryData,
   } = useIncomeEntryData({
     id,
     clientId,
@@ -80,7 +81,12 @@ export function IncomeEntry({
                 } hover:brightness-125 transition-all`}
               />
             </button>
-            <button title="Deletar">
+            <button
+              title="Deletar"
+              onClick={() => {
+                setDeleteEntryData(id)
+              }}
+            >
               <Trash2
                 size={24}
                 className={`${
@@ -98,11 +104,11 @@ export function IncomeEntry({
             <p className="text-gray-100">Quitado?</p>
             <Checkbox.Root
               checked={paid}
-              className={`flex items-center ${
+              className={`flex items-center cursor-default ${
                 clientId
                   ? 'text-emerald-500 border-emerald-500'
                   : 'text-yellow-500 border-yellow-500'
-              } justify-center w-8 h-8 border-2 hover:brightness-125 transition-all`}
+              } justify-center w-8 h-8 border-2 transition-all`}
             >
               <Checkbox.Indicator>
                 <Check size={20} />

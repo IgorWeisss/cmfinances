@@ -1,3 +1,6 @@
+'use client'
+
+import { DeleteEntryDialog } from '@/components/Entries/DeleteEntryDialog'
 import { EntryBox } from '@/components/Entries/EntryBox'
 import { Header } from '@/components/Header/index'
 import { Stats } from '@/components/Stats/index'
@@ -6,6 +9,7 @@ export default function Inicio() {
   return (
     <>
       <Header showMonths />
+      <DeleteEntryDialog />
       <main className="flex flex-col p-12 gap-12">
         <div className="flex flex-col w-full max-w-[100rem] mx-auto gap-12">
           <div className="flex h-container w-full gap-12 ">

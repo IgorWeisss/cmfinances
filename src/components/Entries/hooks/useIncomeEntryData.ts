@@ -85,14 +85,18 @@ export function useIncomeEntryData({
   }
 
   const setUpdateEntryData = useEntryDialogStore(
-    (state) => state.setUpdateEntryData,
+    (state) => state.setUpdateIncomeEntryData,
   )
 
   const updateEntryData = useEntryDialogStore(
-    (state) => state.updateEntryData.data,
+    (state) => state.updateIncomeEntryData.data,
   )
 
   const shouldRenderUpdateDialog = updateEntryData?.id === id
+
+  const setDeleteEntryData = useEntryDialogStore(
+    (state) => state.setDeleteEntryData,
+  )
 
   const formattedDueDate = format(new Date(dueDate), "dd'/'MM'/'yyyy", {
     locale: ptBR,
@@ -125,5 +129,6 @@ export function useIncomeEntryData({
     updateEntryData,
     shouldRenderUpdateDialog,
     setUpdateEntryData,
+    setDeleteEntryData,
   }
 }

@@ -14,7 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Popover } from '@radix-ui/react-popover'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { AlertTriangle, CalendarDays, Loader2 } from 'lucide-react'
+import { CalendarDays, Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '../ui/button'
@@ -30,13 +30,6 @@ import {
 } from '../ui/form'
 import { Input } from '../ui/input'
 import { PopoverContent, PopoverTrigger } from '../ui/popover'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select'
 import { generateToast } from '../ui/generateToast'
 
 const formSchema = z.object({
@@ -45,17 +38,13 @@ const formSchema = z.object({
   }),
   description: z
     .string()
-    .min(1, { message: 'A descrição da entrada é obrigatória' }),
-  client: z.string().min(1, { message: 'O nome do cliente é obrigatório' }),
+    .min(1, { message: 'A descrição da saída é obrigatória' }),
   value: z
     .string()
     .refine((value) => value !== 'R$ 0,00' && value !== 'R$ 0,00', {
       message: 'O valor não pode ser R$ 0,00',
     }),
   paid: z.boolean(),
-  payMethod: z.string({
-    required_error: 'Escolha a forma de pagamento',
-  }),
 })
 
 function formatCurrency(value: string) {
@@ -68,16 +57,15 @@ function formatCurrency(value: string) {
   }).format(newValue)
 }
 
-export function NewIncomeEntryDialog() {
-  const open = useEntryDialogStore((state) => state.newIncomeEntryOpenState)
+export function NewExpensesEntryDialog() {
+  const open = useEntryDialogStore((state) => state.newExpensesEntryOpenState)
   const setOpen = useEntryDialogStore(
-    (state) => state.setNewIncomeEntryOpenState,
+    (state) => state.setNewExpensesEntryOpenState,
   )
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      client: '',
       description: '',
       paid: false,
       value: formatCurrency('0'),
@@ -92,10 +80,9 @@ export function NewIncomeEntryDialog() {
     const { loadingToast, successToast, errorToast } = generateToast()
     const toastId = String(new Date())
     loadingToast(toastId)
-
     const newEntryData: PostNewEntryProps = {
       ...values,
-      entryType: 'IN',
+      entryType: 'OUT',
       // TODO: HARD-CODED userId!!! Change to dynamic after auth
       userId: '280eeb0c-915b-4495-8907-9fd6e8dcf561',
       value: parseFloat(values.value.replace(/\D/g, '')) / 100,
@@ -104,7 +91,7 @@ export function NewIncomeEntryDialog() {
       onSuccess: () => {
         form.reset()
         setOpen(false)
-        successToast(toastId, 'Entrada gravada com sucesso')
+        successToast(toastId, 'Saída gravada com sucesso')
       },
       onError: () => {
         errorToast(toastId, 'Ops... Algo deu errado...')
@@ -116,7 +103,7 @@ export function NewIncomeEntryDialog() {
     <AlertDialog open={open}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Cadastrar nova entrada</AlertDialogTitle>
+          <AlertDialogTitle>Cadastrar nova saída</AlertDialogTitle>
           <AlertDialogDescription>
             Complete os dados abaixo. Clique em Salvar quando tiver terminado.
           </AlertDialogDescription>
@@ -124,32 +111,10 @@ export function NewIncomeEntryDialog() {
 
         <Form {...form}>
           <form
-            id="newIncomeEntryForm"
+            id="newExpensesEntryForm"
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4"
           >
-            <div className="flex flex-row gap-4 p-4 rounded-md border border-yellow-500 text-yellow-500">
-              <AlertTriangle className="w-20 h-10" />
-              <p>
-                <strong className="font-bold">Atenção!</strong> Novas entradas
-                devem ser cadastradas sempre pelo menu ADM do site. Utilizar
-                essa função apenas para entradas de clientes não cadastrados no
-                site.
-              </p>
-            </div>
-            <FormField
-              control={form.control}
-              name="client"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome do cliente</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Digite o nome do cliente" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="description"
@@ -158,7 +123,7 @@ export function NewIncomeEntryDialog() {
                   <FormLabel>Descrição</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Digite a descrição da entrada"
+                      placeholder="Digite a descrição da saída"
                       {...field}
                     />
                   </FormControl>
@@ -200,70 +165,9 @@ export function NewIncomeEntryDialog() {
                       />
                     </FormControl>
                     <FormLabel className="text-lg mt-0 leading-none">
-                      Entrada quitada
+                      Saída quitada
                     </FormLabel>
                   </div>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="payMethod"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Forma de pagamento</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione a forma de pagamento" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="PIX">PIX</SelectItem>
-                      <SelectItem value="Boleto">Boleto</SelectItem>
-                      <SelectItem value="Dinheiro">Dinheiro</SelectItem>
-                      <SelectItem value="Cartão (Crédito 1X)">
-                        Cartão (Crédito 1X)
-                      </SelectItem>
-                      <SelectItem value="Cartão (Crédito 2X)">
-                        Cartão (Crédito 2X)
-                      </SelectItem>
-                      <SelectItem value="Cartão (Crédito 3X)">
-                        Cartão (Crédito 3X)
-                      </SelectItem>
-                      <SelectItem value="Cartão (Crédito 4X)">
-                        Cartão (Crédito 4X)
-                      </SelectItem>
-                      <SelectItem value="Cartão (Crédito 5X)">
-                        Cartão (Crédito 5X)
-                      </SelectItem>
-                      <SelectItem value="Cartão (Crédito 6X)">
-                        Cartão (Crédito 6X)
-                      </SelectItem>
-                      <SelectItem value="Cartão (Crédito 7X)">
-                        Cartão (Crédito 7X)
-                      </SelectItem>
-                      <SelectItem value="Cartão (Crédito 8X)">
-                        Cartão (Crédito 8X)
-                      </SelectItem>
-                      <SelectItem value="Cartão (Crédito 9X)">
-                        Cartão (Crédito 9X)
-                      </SelectItem>
-                      <SelectItem value="Cartão (Crédito 10X)">
-                        Cartão (Crédito 10X)
-                      </SelectItem>
-                      <SelectItem value="Cartão (Crédito 11X)">
-                        Cartão (Crédito 11X)
-                      </SelectItem>
-                      <SelectItem value="Cartão (Crédito 12X)">
-                        Cartão (Crédito 12X)
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -321,7 +225,7 @@ export function NewIncomeEntryDialog() {
           <Button
             disabled={isSubmitDisabled || isLoading}
             type="submit"
-            form="newIncomeEntryForm"
+            form="newExpensesEntryForm"
           >
             {isLoading ? <Loader2 className="animate-spin" /> : 'Salvar'}
           </Button>

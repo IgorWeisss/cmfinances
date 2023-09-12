@@ -2,34 +2,79 @@ import { EntryData } from '@/queries/useFetchPeriodData'
 import { create } from 'zustand'
 
 interface Store {
-  updateEntryData: {
+  updateIncomeEntryData: {
     openState: boolean
     data: EntryData | null
   }
-  newEntryOpenState: boolean
-  setUpdateEntryData: (data: EntryData | null) => void
-  setNewEntryOpenState: (openState: boolean) => void
+  updateExpensesEntryData: {
+    openState: boolean
+    data: EntryData | null
+  }
+  newIncomeEntryOpenState: boolean
+  newExpensesEntryOpenState: boolean
+  deleteEntryData: {
+    openState: boolean
+    id: string | null
+  }
+  setUpdateIncomeEntryData: (data: EntryData | null) => void
+  setUpdateExpensesEntryData: (data: EntryData | null) => void
+  setNewIncomeEntryOpenState: (openState: boolean) => void
+  setNewExpensesEntryOpenState: (openState: boolean) => void
+  setDeleteEntryData: (id: string | null) => void
 }
 
 export const useEntryDialogStore = create<Store>()((set) => ({
-  updateEntryData: {
+  updateIncomeEntryData: {
     openState: false,
     data: null,
   },
-  newEntryOpenState: false,
-  setUpdateEntryData: (data) => {
+  updateExpensesEntryData: {
+    openState: false,
+    data: null,
+  },
+  newIncomeEntryOpenState: false,
+  newExpensesEntryOpenState: false,
+  deleteEntryData: {
+    openState: false,
+    id: null,
+  },
+  setUpdateIncomeEntryData: (data) => {
     set((state) => ({
       ...state,
-      updateEntryData: {
+      updateIncomeEntryData: {
         data,
-        openState: !state.updateEntryData.openState,
+        openState: !state.updateIncomeEntryData.openState,
       },
     }))
   },
-  setNewEntryOpenState: (openState) => {
+  setUpdateExpensesEntryData: (data) => {
     set((state) => ({
       ...state,
-      newEntryOpenState: openState,
+      updateExpensesEntryData: {
+        data,
+        openState: !state.updateExpensesEntryData.openState,
+      },
+    }))
+  },
+  setNewIncomeEntryOpenState: (openState) => {
+    set((state) => ({
+      ...state,
+      newIncomeEntryOpenState: openState,
+    }))
+  },
+  setNewExpensesEntryOpenState: (openState) => {
+    set((state) => ({
+      ...state,
+      newExpensesEntryOpenState: openState,
+    }))
+  },
+  setDeleteEntryData: (id) => {
+    set((state) => ({
+      ...state,
+      deleteEntryData: {
+        id,
+        openState: !state.deleteEntryData.openState,
+      },
     }))
   },
 }))
