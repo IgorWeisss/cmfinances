@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Criar JWT e enviá-lo através dos cookies
-    const secret = process.env.JWT_SECRET!
+    const secret = process.env.JWT_SECRET || ''
     const token = jwt.sign({ userInfo }, secret)
 
     const cookieExpireDateInSeconds = 60 // 60 * 60 * 24 * 30
