@@ -26,6 +26,7 @@ export function Header({ showMonths }: HeaderProps) {
           Finances
         </span>
       </div>
+      <a href="/api/auth/logout">LOGOUT</a>
     </header>
   )
 }

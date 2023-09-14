@@ -27,11 +27,13 @@
     "@types/react-dom": "18.2.5",
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
+    "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.5",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.262.0",
     "next": "13.4.5",
     "postcss": "8.4.24",
@@ -49,6 +51,8 @@
   },
   "devDependencies": {
     "@rocketseat/eslint-config": "^1.2.0",
+    "@types/bcryptjs": "^2.4.3",
+    "@types/jsonwebtoken": "^9.0.2",
     "dotenv": "^16.3.1",
     "prisma": "^4.14.1"
   }

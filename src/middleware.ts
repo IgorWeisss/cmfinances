@@ -9,6 +9,10 @@ const allowedOrigins =
       ]
 
 export async function middleware(request: NextRequest, response: NextResponse) {
+  if (request.nextUrl.pathname.startsWith('/api/auth/logout')) {
+    return NextResponse.next()
+  }
+
   // Auth for API routes
   if (request.nextUrl.pathname.startsWith('/api')) {
     const origin = request.headers.get('origin')
@@ -37,19 +41,17 @@ export async function middleware(request: NextRequest, response: NextResponse) {
   }
 
   // Auth for the app Main page
-  if (process.env.NODE_ENV === 'production') {
-    if (request.nextUrl.pathname.startsWith('/inicio')) {
-      const token = request.cookies.get('token')?.value
+  if (request.nextUrl.pathname.startsWith('/inicio')) {
+    const token = request.cookies.get('token')?.value
 
-      if (!token) {
-        return NextResponse.redirect(new URL('/', request.url), {
-          headers: {
-            'Set-cookie': `redirectTo=${request.url}; HttpOnly; Path=/; max-age=60;`,
-          },
-        })
-      }
+    if (!token) {
+      return NextResponse.redirect(new URL('/', request.url), {
+        headers: {
+          'Set-cookie': `redirectTo=${request.url}; HttpOnly; Path=/; max-age=60;`,
+        },
+      })
     }
-
-    return NextResponse.next()
   }
+
+  return NextResponse.next()
 }

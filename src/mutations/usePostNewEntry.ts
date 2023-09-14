@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
-// import { generateToast } from '../components/ui/generateToast'
 
 export interface PostNewEntryProps {
   description: string
@@ -25,21 +24,13 @@ async function updateEntryData(body: PostNewEntryProps) {
 }
 
 export function usePostNewEntry() {
-  // const { loadingToast, successToast, errorToast } = generateToast()
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (body: PostNewEntryProps) => updateEntryData(body),
-    // onMutate: () => {
-    //   loadingToast()
-    // },
     onSuccess: () => {
-      // successToast('Dados gravados com sucesso!')
       queryClient.invalidateQueries({ queryKey: ['periodData'] })
       queryClient.invalidateQueries({ queryKey: ['yearsList'] })
     },
-    // onError: () => {
-    //   errorToast('Algo deu errado...')
-    // },
   })
 }
