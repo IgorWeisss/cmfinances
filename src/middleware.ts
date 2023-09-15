@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { verify } from './lib/JWTUtil'
 
 const allowedOrigins =
   process.env.NODE_ENV === 'production'
@@ -45,6 +46,20 @@ export async function middleware(request: NextRequest, response: NextResponse) {
     const token = request.cookies.get('token')?.value
 
     if (!token) {
+      return NextResponse.redirect(new URL('/', request.url), {
+        headers: {
+          'Set-cookie': `redirectTo=${request.url}; HttpOnly; Path=/; max-age=60;`,
+        },
+      })
+    }
+
+    try {
+      const secret = process.env.JWT_SECRET || ''
+      const verifiedtoken = await verify(token, secret)
+
+      console.log(verifiedtoken)
+    } catch (error) {
+      console.log('Catch error')
       return NextResponse.redirect(new URL('/', request.url), {
         headers: {
           'Set-cookie': `redirectTo=${request.url}; HttpOnly; Path=/; max-age=60;`,

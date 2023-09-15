@@ -1,7 +1,7 @@
+import { sign } from '@/lib/JWTUtil'
 import { comparePassword } from '@/lib/passwordUtils'
 import { prisma } from '@/services/prisma'
 import { NextRequest, NextResponse } from 'next/server'
-import jwt from 'jsonwebtoken'
 
 export async function POST(req: NextRequest) {
   const origin = req.headers.get('origin')
@@ -44,13 +44,11 @@ export async function POST(req: NextRequest) {
       userEmail: user.email,
     }
 
-    // Criar JWT e enviá-lo através dos cookies
+    // Creates JWT and sends it via cookies
     const secret = process.env.JWT_SECRET || ''
-    const token = jwt.sign({ userInfo }, secret)
+    const token = await sign(userInfo, secret)
 
     const cookieExpireDateInSeconds = 60 // 60 * 60 * 24 * 30
-
-    req.nextUrl.pathname = '/inicio'
 
     return NextResponse.json('Authenticated', {
       headers: {
