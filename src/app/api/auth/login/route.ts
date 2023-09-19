@@ -1,4 +1,4 @@
-import { sign } from '@/lib/JWTUtil'
+import { JWT_DURATION_IN_SECONDS, sign } from '@/lib/JWTUtil'
 import { comparePassword } from '@/lib/passwordUtils'
 import { prisma } from '@/services/prisma'
 import { NextRequest, NextResponse } from 'next/server'
@@ -45,14 +45,12 @@ export async function POST(req: NextRequest) {
     }
 
     // Creates JWT and sends it via cookies
-    const secret = process.env.JWT_SECRET || ''
+    const secret = process.env.JWT_SECRET
     const token = await sign(userInfo, secret)
-
-    const cookieExpireDateInSeconds = 60 // 60 * 60 * 24 * 30
 
     return NextResponse.json('Authenticated', {
       headers: {
-        'Set-cookie': `token=${token}; Path=/; HttpOnly=true; Secure=true; max-age=${cookieExpireDateInSeconds};`,
+        'Set-cookie': `token=${token}; Path=/; HttpOnly=true; Secure=true; max-age=${JWT_DURATION_IN_SECONDS};`,
         'Access-Control-Allow-Origin': origin || '*',
       },
     })

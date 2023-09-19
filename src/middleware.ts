@@ -54,12 +54,10 @@ export async function middleware(request: NextRequest, response: NextResponse) {
     }
 
     try {
-      const secret = process.env.JWT_SECRET || ''
-      const verifiedtoken = await verify(token, secret)
-
-      console.log(verifiedtoken)
+      const secret = process.env.JWT_SECRET
+      await verify(token, secret)
     } catch (error) {
-      console.log('Catch error')
+      console.log(error)
       return NextResponse.redirect(new URL('/', request.url), {
         headers: {
           'Set-cookie': `redirectTo=${request.url}; HttpOnly; Path=/; max-age=60;`,
