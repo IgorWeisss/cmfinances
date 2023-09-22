@@ -1,3 +1,4 @@
+import { Avatar } from './Avatar'
 import { PeriodCarousel } from './PeriodCarousel'
 
 interface HeaderProps {
@@ -19,6 +20,7 @@ export function Header({ showMonths }: HeaderProps) {
         </div>
       </nav>
       <div className="flex items-center justify-center">
+        <Avatar />
         <span className="text-orange-500 font-bold text-[1.5rem] sm:text-[2rem]">
           CM
         </span>
@@ -26,7 +28,6 @@ export function Header({ showMonths }: HeaderProps) {
           Finances
         </span>
       </div>
-      <a href="/api/auth/logout">LOGOUT</a>
     </header>
   )
 }

@@ -31,6 +31,7 @@ import {
 import { Input } from '../ui/input'
 import { PopoverContent, PopoverTrigger } from '../ui/popover'
 import { generateToast } from '../ui/generateToast'
+import { useFetchUserData } from '@/queries/useFetchUserData'
 
 const formSchema = z.object({
   dueDate: z.date({
@@ -58,6 +59,7 @@ function formatCurrency(value: string) {
 }
 
 export function NewExpensesEntryDialog() {
+  const { data } = useFetchUserData()
   const open = useEntryDialogStore((state) => state.newExpensesEntryOpenState)
   const setOpen = useEntryDialogStore(
     (state) => state.setNewExpensesEntryOpenState,
@@ -77,26 +79,27 @@ export function NewExpensesEntryDialog() {
   const { mutate, isLoading } = usePostNewEntry()
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { loadingToast, successToast, errorToast } = generateToast()
-    const toastId = String(new Date())
-    loadingToast(toastId)
-    const newEntryData: PostNewEntryProps = {
-      ...values,
-      entryType: 'OUT',
-      // TODO: HARD-CODED userId!!! Change to dynamic after auth
-      userId: '280eeb0c-915b-4495-8907-9fd6e8dcf561',
-      value: parseFloat(values.value.replace(/\D/g, '')) / 100,
+    if (data) {
+      const { loadingToast, successToast, errorToast } = generateToast()
+      const toastId = String(new Date())
+      loadingToast(toastId)
+      const newEntryData: PostNewEntryProps = {
+        ...values,
+        entryType: 'OUT',
+        userId: data.userId,
+        value: parseFloat(values.value.replace(/\D/g, '')) / 100,
+      }
+      mutate(newEntryData, {
+        onSuccess: () => {
+          form.reset()
+          setOpen(false)
+          successToast(toastId, 'Saída gravada com sucesso')
+        },
+        onError: () => {
+          errorToast(toastId, 'Ops... Algo deu errado...')
+        },
+      })
     }
-    mutate(newEntryData, {
-      onSuccess: () => {
-        form.reset()
-        setOpen(false)
-        successToast(toastId, 'Saída gravada com sucesso')
-      },
-      onError: () => {
-        errorToast(toastId, 'Ops... Algo deu errado...')
-      },
-    })
   }
 
   return (

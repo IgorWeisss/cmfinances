@@ -38,6 +38,7 @@ import {
   SelectValue,
 } from '../ui/select'
 import { generateToast } from '../ui/generateToast'
+import { useFetchUserData } from '@/queries/useFetchUserData'
 
 const formSchema = z.object({
   dueDate: z.date({
@@ -69,6 +70,7 @@ function formatCurrency(value: string) {
 }
 
 export function NewIncomeEntryDialog() {
+  const { data } = useFetchUserData()
   const open = useEntryDialogStore((state) => state.newIncomeEntryOpenState)
   const setOpen = useEntryDialogStore(
     (state) => state.setNewIncomeEntryOpenState,
@@ -89,27 +91,28 @@ export function NewIncomeEntryDialog() {
   const { mutate, isLoading } = usePostNewEntry()
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { loadingToast, successToast, errorToast } = generateToast()
-    const toastId = String(new Date())
-    loadingToast(toastId)
+    if (data) {
+      const { loadingToast, successToast, errorToast } = generateToast()
+      const toastId = String(new Date())
+      loadingToast(toastId)
 
-    const newEntryData: PostNewEntryProps = {
-      ...values,
-      entryType: 'IN',
-      // TODO: HARD-CODED userId!!! Change to dynamic after auth
-      userId: '280eeb0c-915b-4495-8907-9fd6e8dcf561',
-      value: parseFloat(values.value.replace(/\D/g, '')) / 100,
+      const newEntryData: PostNewEntryProps = {
+        ...values,
+        entryType: 'IN',
+        userId: data.userId,
+        value: parseFloat(values.value.replace(/\D/g, '')) / 100,
+      }
+      mutate(newEntryData, {
+        onSuccess: () => {
+          form.reset()
+          setOpen(false)
+          successToast(toastId, 'Entrada gravada com sucesso')
+        },
+        onError: () => {
+          errorToast(toastId, 'Ops... Algo deu errado...')
+        },
+      })
     }
-    mutate(newEntryData, {
-      onSuccess: () => {
-        form.reset()
-        setOpen(false)
-        successToast(toastId, 'Entrada gravada com sucesso')
-      },
-      onError: () => {
-        errorToast(toastId, 'Ops... Algo deu errado...')
-      },
-    })
   }
 
   return (

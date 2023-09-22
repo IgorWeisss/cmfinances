@@ -47,9 +47,8 @@ export default function Login() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     mutate(values, {
-      onSuccess: (data) => {
-        console.log(data)
-        router.push('/inicio')
+      onSuccess: (redirectTo) => {
+        router.push(redirectTo)
       },
     })
   }

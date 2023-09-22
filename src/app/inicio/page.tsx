@@ -1,5 +1,3 @@
-'use client'
-
 import { DeleteEntryDialog } from '@/components/Entries/DeleteEntryDialog'
 import { EntryBox } from '@/components/Entries/EntryBox'
 import { Header } from '@/components/Header/index'

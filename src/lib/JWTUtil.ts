@@ -1,6 +1,6 @@
 import { SignJWT, jwtVerify, type JWTPayload } from 'jose'
 
-export const JWT_DURATION_IN_SECONDS = 60
+export const JWT_DURATION_IN_SECONDS = 259200
 
 export async function sign(
   payload: JWTPayload,
