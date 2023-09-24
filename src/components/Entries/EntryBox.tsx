@@ -32,8 +32,8 @@ export function EntryBox({ variant }: ExtryBoxProps) {
   if (isLoading) {
     return (
       <div
-        className="relative bg-gradient-to-b from-blue-800 to-blue-900 h-full w-full
-      rounded-[1.25rem] overflow-hidden shadow-entry-box"
+        className="relative bg-gradient-to-b from-blue-800 to-blue-900 h-container w-full
+      rounded-[1.25rem] shadow-entry-box"
       >
         <header className="flex flex-col bg-gray-100 absolute top-0 w-full rounded-[1.25rem]">
           <h2 className="p-4 text-gray-600 font-bold text-xl">Carregando...</h2>
@@ -46,7 +46,7 @@ export function EntryBox({ variant }: ExtryBoxProps) {
         <div className="flex h-full items-center justify-center text-gray-500">
           <Loader2 size={60} className="animate-spin" />
         </div>
-        <footer className="flex flex-col items-center justify-center py-2 gap-2 bg-gray-100 absolute bottom-0 w-full">
+        <footer className="flex flex-col items-center justify-center py-2 gap-2 bg-gray-100 absolute bottom-0 rounded-b-[1.25rem] w-full">
           <span className="text-gray-600 text-base leading-none">Total:</span>
           <span className={` font-bold text-2xl leading-none text-gray-600`}>
             ---
@@ -60,8 +60,8 @@ export function EntryBox({ variant }: ExtryBoxProps) {
     if (variant === 'IN')
       return (
         <div
-          className="relative bg-gradient-to-b from-blue-800 to-blue-900 h-full w-full
-      rounded-[1.25rem] overflow-hidden shadow-entry-box"
+          className="relative bg-gradient-to-b from-blue-800 to-blue-900 h-container w-full
+      rounded-[1.25rem] shadow-entry-box"
         >
           <div className="flex flex-col h-full items-center justify-center p-10 text-gray-500">
             <AlertTriangle size={60} className="" />
@@ -75,8 +75,8 @@ export function EntryBox({ variant }: ExtryBoxProps) {
 
     return (
       <div
-        className="relative bg-gradient-to-b from-blue-800 to-blue-900 h-full w-full
-      rounded-[1.25rem] overflow-hidden shadow-entry-box"
+        className="relative bg-gradient-to-b from-blue-800 to-blue-900 h-container w-full
+      rounded-[1.25rem] shadow-entry-box"
       >
         <div className="flex flex-col h-full items-center justify-center p-10 text-gray-500">
           <Frown size={60} className="" />
@@ -91,8 +91,8 @@ export function EntryBox({ variant }: ExtryBoxProps) {
 
   return (
     <div
-      className="relative bg-gradient-to-b from-blue-800 to-blue-900 h-full w-full
-      rounded-[1.25rem] overflow-hidden shadow-entry-box"
+      className="relative bg-gradient-to-b from-blue-800 to-blue-900 h-container w-full
+      rounded-[1.25rem] shadow-entry-box"
     >
       {variant === 'IN' ? <NewIncomeEntryDialog /> : <NewExpensesEntryDialog />}
       <header className="flex flex-col bg-gray-100 relative rounded-[1.25rem]">
@@ -100,7 +100,7 @@ export function EntryBox({ variant }: ExtryBoxProps) {
         <button
           className="w-10 h-10 bg-gradient-to-b from-orange-500 to-orange-600
           hover:brightness-125 transition-all absolute right-0 top-0
-          rounded-bl-[1.25rem] text-gray-100 flex items-center justify-center"
+          rounded-bl-[1.25rem] rounded-tr-[1.25rem] text-gray-100 flex items-center justify-center"
           onClick={() => {
             setDialogOpenState(true)
           }}
@@ -129,7 +129,7 @@ export function EntryBox({ variant }: ExtryBoxProps) {
       <div className="flex flex-col h-box-content overflow-y-auto overscroll-contain box-scroll">
         <EntryContent filteredData={filteredData} variant={variant} />
       </div>
-      <footer className="flex flex-col items-center justify-center py-2 gap-2 bg-gray-100 absolute bottom-0 w-full">
+      <footer className="flex flex-col items-center justify-center py-2 gap-2 rounded-b-[1.25rem] bg-gray-100 absolute bottom-0 w-full">
         <span className="text-gray-600 text-base leading-none">Total:</span>
         <span className={` font-bold text-2xl leading-none ${color}`}>
           {formattedTotalValue}

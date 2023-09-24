@@ -11,7 +11,7 @@ export function Stats() {
     return (
       <div
         className="relative bg-gradient-to-b from-blue-800 to-blue-900 flex flex-col
-      items-center justify-between py-12 h-full w-full rounded-[1.25rem] overflow-hidden
+      items-center justify-between py-12 h-container w-full rounded-[1.25rem]
       shadow-entry-box"
       >
         <div className="flex h-full items-center justify-center text-gray-500">
@@ -24,7 +24,7 @@ export function Stats() {
     return (
       <div
         className="relative bg-gradient-to-b from-blue-800 to-blue-900 flex flex-col
-    items-center justify-between py-12 h-full w-full rounded-[1.25rem] overflow-hidden
+    items-center justify-between py-12 h-container w-full rounded-[1.25rem]
     shadow-entry-box"
       >
         <div className="flex flex-col h-full items-center justify-center p-10 text-gray-500">
@@ -40,7 +40,7 @@ export function Stats() {
   return (
     <div
       className="relative bg-gradient-to-b from-blue-800 to-blue-900 flex flex-col
-      items-center justify-between py-12 h-full w-full rounded-[1.25rem] overflow-hidden
+      items-center justify-between py-12 h-container w-full rounded-[1.25rem]
       shadow-entry-box"
     >
       {formatedData.map((stat, index) => (
@@ -58,7 +58,7 @@ export function Stats() {
         href="inicio/resumo-anual"
         className="w-10 h-10 bg-gradient-to-b from-orange-500 to-orange-600
           hover:brightness-125 transition-all absolute right-0 bottom-0
-          rounded-tl-[1.25rem] text-gray-100 flex items-center justify-center"
+          rounded-tl-[1.25rem] rounded-br-[1.25rem] text-gray-100 flex items-center justify-center"
       >
         <MoreHorizontal size={20} />
       </Link>
