@@ -95,7 +95,7 @@ export function EntryBox({ variant }: ExtryBoxProps) {
         <button
           className="absolute w-10 h-10 bg-gradient-to-b from-orange-500 to-orange-600
           hover:brightness-125 transition-all right-0 top-0
-          rounded-bl-[1.25rem] rounded-tr-[1.25rem] text-gray-100 flex items-center justify-center z-50"
+          rounded-bl-[1.25rem] rounded-tr-[1.25rem] text-gray-100 flex items-center justify-center z-40"
           onClick={() => {
             setDialogOpenState(true)
           }}

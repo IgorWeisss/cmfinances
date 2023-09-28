@@ -9,15 +9,17 @@ import QueryProvider from '@/contexts/QueryProvider'
 import { YearsListProvider } from '@/contexts/yearsListProvider'
 import { getYearsListFromServer } from '@/services/getYearsListFromServer'
 import { ToastContainer } from 'react-toastify'
+import { Metadata } from 'next'
 
 const poppins = Poppins({ weight: ['400', '700'], subsets: ['latin'] })
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'CMFinances',
   description: 'Sistema desenvolvido por Igor Weiss',
-  appleMobileWebAppCapable: 'yes',
-  mobileWebAppCapable: 'yes',
   themeColor: '#1A2B40',
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
 }
 
 interface RootLayoutProps {
