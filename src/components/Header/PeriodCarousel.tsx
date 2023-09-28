@@ -16,7 +16,7 @@ export function PeriodCarousel({ variant }: { variant: 'MONTH' | 'YEAR' }) {
   } = useCarouselData(variant)
 
   return (
-    <div className={`flex w-full ${variant === 'MONTH' && 'sm:carousel'}`}>
+    <div className={`flex w-full ${variant === 'MONTH' && 'lg:carousel'}`}>
       <button
         className={`text-gray-600 cursor-not-allowed transition-colors ${
           index > 0 && 'text-orange-500 cursor-pointer hover:brightness-125'

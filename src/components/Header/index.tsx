@@ -7,9 +7,9 @@ interface HeaderProps {
 
 export function Header({ showMonths }: HeaderProps) {
   return (
-    <header className="w-full bg-gradient-to-b from-blue-800 to-blue-900 px-4 sm:px-12 py-5 flex justify-between gap-2">
+    <header className="fixed z-50 w-screen bg-gradient-to-b from-blue-800 to-blue-900 px-4 sm:px-12 py-5 flex justify-between gap-2">
       <nav className="flex items-center justify-center">
-        <div className="flex flex-col sm:flex-row">
+        <div className="flex flex-col xl:flex-row">
           <PeriodCarousel variant="YEAR" />
           {showMonths && (
             <>

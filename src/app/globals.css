@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --box-content-height: calc((100dvh - 11.5rem) - 10.5rem);
+}
+
 /* Scrollbar width */
 ::-webkit-scrollbar {
   width: 0.41666rem;
@@ -34,11 +38,11 @@
   }
 
   .h-container {
-    height: calc(100vh - 11.5rem);
+    height: calc(100dvh - 11.5rem);
   }
   
   .h-box-content {
-    height: calc(100% - 10.5rem);
+    height: calc((100dvh - 11.5rem) - 10.5rem);
   }
 
   .box-scroll:hover::-webkit-scrollbar-thumb {

@@ -54,7 +54,7 @@ export default function Login() {
   }
   return (
     <div
-      className="flex flex-col gap-8 items-center justify-center w-full h-screen bg-gradient-to-b from-blue-800
+      className="flex flex-col gap-8 items-center justify-center w-full h-[100dvh] bg-gradient-to-b from-blue-800
             to-blue-900"
     >
       <div className="flex items-center justify-center">

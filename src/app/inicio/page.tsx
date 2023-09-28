@@ -8,9 +8,9 @@ export default function Inicio() {
     <>
       <Header showMonths />
       <DeleteEntryDialog />
-      <main className="flex flex-col p-12 gap-12">
+      <main className="mt-[5.5rem] flex flex-col p-12 gap-12">
         <div className="flex flex-col w-full max-w-[100rem] mx-auto gap-12">
-          <div className="flex flex-col sm:flex-row h-full w-full gap-12 ">
+          <div className="flex flex-col lg:flex-row h-full w-full gap-12 ">
             <EntryBox variant="IN" />
             <EntryBox variant="OUT" />
             <Stats></Stats>
