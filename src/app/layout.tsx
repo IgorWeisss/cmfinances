@@ -15,6 +15,9 @@ const poppins = Poppins({ weight: ['400', '700'], subsets: ['latin'] })
 export const metadata = {
   title: 'CMFinances',
   description: 'Sistema desenvolvido por Igor Weiss',
+  appleMobileWebAppCapable: 'yes',
+  mobileWebAppCapable: 'yes',
+  themeColor: '#1A2B40',
 }
 
 interface RootLayoutProps {
