@@ -18,7 +18,7 @@ interface ExtryBoxProps {
 }
 
 export function EntryBox({ variant }: ExtryBoxProps) {
-  const [accordionState, setAccordionState] = useState(false)
+  const [accordionState, setAccordionState] = useState<boolean | string>(false)
   const {
     title,
     color,
@@ -30,14 +30,19 @@ export function EntryBox({ variant }: ExtryBoxProps) {
     setPaidStateFilter,
     setDialogOpenState,
   } = useEntryBoxData(variant)
+  const anchorHref =
+    accordionState === 'animateUp' || accordionState === true
+      ? `#`
+      : `#${title}`
 
   if (isLoading) {
     return (
       <div
+        data-accordion={accordionState}
         className="group relative bg-gradient-to-b from-blue-800 h-fit to-blue-900 w-full
       rounded-[1.25rem] shadow-entry-box"
       >
-        <header className="flex flex-col bg-gray-100 relative rounded-t-[1.25rem] lg:rounded-[1.25rem]">
+        <header className="flex flex-col bg-gray-100 relative rounded-t-[1.25rem] group-data-[accordion=true]:rounded-[1.25rem] lg:rounded-[1.25rem]">
           <h2 className="p-4 text-gray-600 font-bold text-xl">Caregando...</h2>
           <div className="rounded-[1.25rem] shadow-filter-box flex justify-between">
             <div className={toggleGroupItemClasses}>Todas</div>
@@ -45,7 +50,10 @@ export function EntryBox({ variant }: ExtryBoxProps) {
             <div className={toggleGroupItemClasses}>Em aberto</div>
           </div>
         </header>
-        <div className="lg:flex hidden lg:h-box-content items-center justify-center text-gray-500">
+        <div
+          className="hidden group-data-[accordion=true]:flex group-data-[accordion=true]:h-box-content
+        lg:flex lg:h-box-content items-center justify-center text-gray-500"
+        >
           <Loader2 size={60} className="animate-spin" />
         </div>
         <footer className="flex flex-col items-center justify-center py-2 gap-2 rounded-b-[1.25rem] bg-gray-100 w-full">
@@ -87,9 +95,9 @@ export function EntryBox({ variant }: ExtryBoxProps) {
       <div id={title} className="absolute -top-[8.5rem]"></div>
       {variant === 'IN' ? <NewIncomeEntryDialog /> : <NewExpensesEntryDialog />}
       <header
-        className="flex flex-col bg-gray-100 relative lg:group-data-[accordion=true]:animate-none 
-        lg:group-data-[accordion=false]:animate-none lg:rounded-[1.25rem]
-        group-data-[accordion=true]:animate-accordion-round group-data-[accordion=false]:animate-accordion-sharp"
+        className="flex flex-col bg-gray-100 relative lg:group-data-[accordion=animateUp]:animate-none 
+        lg:group-data-[accordion=animateDown]:animate-none group-data-[accordion=false]:rounded-t-[1.25rem] group-data-[accordion=true]:rounded-[1.25rem] lg:rounded-[1.25rem]
+        group-data-[accordion=animateDown]:animate-accordion-round group-data-[accordion=animateUp]:animate-accordion-sharp"
       >
         <h2 className="p-4 text-gray-600 font-bold text-xl">{title}</h2>
         <button
@@ -104,14 +112,26 @@ export function EntryBox({ variant }: ExtryBoxProps) {
         </button>
         <div className="absolute inset-0 p-4 w-full h-fit flex items-center justify-center lg:hidden">
           <a
-            href={accordionState ? `#${title}` : '#'}
-            className="flex items-center text-gray-600 justify-center hover:brightness-125 transition-all"
+            href={anchorHref}
+            className="outline-none flex items-center text-gray-600 justify-center hover:brightness-125 transition-all"
             onClick={() => {
-              setAccordionState((state) => !state)
+              setAccordionState((state) => {
+                if (state) {
+                  setTimeout(() => {
+                    setAccordionState(false)
+                  }, 200)
+                  return 'animateUp'
+                } else {
+                  setTimeout(() => {
+                    setAccordionState(true)
+                  }, 200)
+                  return 'animateDown'
+                }
+              })
             }}
           >
             <ChevronDown
-              className="transition-transform duration-200 group-data-[accordion=true]:rotate-180"
+              className="transition-transform duration-200 group-data-[accordion=animateDown]:rotate-180 group-data-[accordion=true]:rotate-180"
               size={20}
             />
           </a>
@@ -136,8 +156,8 @@ export function EntryBox({ variant }: ExtryBoxProps) {
         </ToggleGroup.Root>
       </header>
       <div
-        className="flex-col flex lg:group-data-[accordion=true]:animate-none lg:group-data-[accordion=false]:animate-none lg:h-box-content
-        group-data-[accordion=true]:animate-accordion-down group-data-[accordion=false]:animate-accordion-up
+        className="flex-col flex group-data-[accordion=false]:h-0 group-data-[accordion=true]:h-box-content lg:group-data-[accordion=animateDown]:animate-none lg:group-data-[accordion=animateUp]:animate-none lg:group-data-[accordion=true]:h-box-content lg:group-data-[accordion=false]:h-box-content
+        group-data-[accordion=animateDown]:animate-accordion-down group-data-[accordion=animateUp]:animate-accordion-up
         overflow-y-auto overscroll-contain box-scroll"
       >
         <EntryContent filteredData={filteredData} variant={variant} />
