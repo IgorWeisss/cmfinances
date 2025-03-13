@@ -1,5 +1,5 @@
 import { prisma } from '@/services/prisma'
-import { addMonths, format, subMonths } from 'date-fns'
+import { addDays, format, subMonths } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
 
   const periodName =
     payMethod && payMethod.startsWith('Cartão')
-      ? generatePeriodName(addMonths(new Date(dueDate), 1))
+      ? generatePeriodName(addDays(new Date(dueDate), 14))
       : generatePeriodName(new Date(dueDate))
 
   let verifiedPeriod = await prisma.period.findUnique({
@@ -154,7 +154,7 @@ export async function PUT(req: NextRequest) {
   if (dueDate) {
     entryProperties.periodName =
       payMethod && payMethod.startsWith('Cartão')
-        ? generatePeriodName(addMonths(new Date(dueDate), 1))
+        ? generatePeriodName(addDays(new Date(dueDate), 14))
         : generatePeriodName(new Date(dueDate))
     let verifiedPeriod = await prisma.period.findUnique({
       where: {
