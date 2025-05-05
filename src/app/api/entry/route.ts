@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
 
   const periodName =
     payMethod && payMethod.startsWith('Cartão')
-      ? generatePeriodName(addDays(new Date(dueDate), 14))
+      ? generatePeriodName(addDays(new Date(dueDate), 1))
       : generatePeriodName(new Date(dueDate))
 
   let verifiedPeriod = await prisma.period.findUnique({
@@ -154,7 +154,7 @@ export async function PUT(req: NextRequest) {
   if (dueDate) {
     entryProperties.periodName =
       payMethod && payMethod.startsWith('Cartão')
-        ? generatePeriodName(addDays(new Date(dueDate), 14))
+        ? generatePeriodName(addDays(new Date(dueDate), 1))
         : generatePeriodName(new Date(dueDate))
     let verifiedPeriod = await prisma.period.findUnique({
       where: {
